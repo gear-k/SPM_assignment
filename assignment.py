@@ -1,4 +1,15 @@
+# Residential (R)
+# Industry (I)
+# Commercial (C)
+# Park (O)
+# Road (*)
+
 import json
+import random
+import string
+
+BUILDINGS = ["Residential", "Industry", "Commercial", "Park", "Road"]
+LETTERS = string.ascii_lowercase
 
 def load_high_scores():
     try:
@@ -38,7 +49,7 @@ def display_main_menu():
 def start_new_arcade_game():
     print("Starting new Arcade game...")
     # Placeholder for Arcade game initialization and play logic
-    play_arcade_game()
+    play_arcade_game(game_state=None)
 
 def start_new_free_play_game():
     print("Starting new Free Play game...")
@@ -65,13 +76,75 @@ def display_high_scores(high_scores):
 def exit_game():
     print("Exiting the game. Goodbye!")
 
-def play_arcade_game(game_state=None):
+def play_arcade_game(game_state):
     print("Arcade game logic goes here.")
     # Placeholder for Arcade game play logic
+
+    if game_state != None:
+        board = game_state
+    else:
+        board = create_board(20)
+
+    turn = 0
+    coin = 16
+    score = 0
+    while coin > 0:
+        print("Turn : ", turn)
+        turn += 1
+        print("Score: ", score)
+
+        building1 = random.randint(0, 4)
+        building2 = random.randint(0, 4)
+        print("Building choices\n - " + BUILDINGS[building1] + "\n - " + BUILDINGS[building2] + "\n")
+
+        for row in board:
+            print(" ".join(row))
+
+        print("\nWhat would u like to do?")
+        print("1. Build a " + BUILDINGS[building1])
+        print("2. Build a " + BUILDINGS[building2])
+        print("3. Demolish a Building")
+        print("4. Saved Game")
+        print("5. End Game")
+        choice = input("Enter your choice: ")
+        if choice == '1':
+            continue
+        elif choice == '2':
+            continue
+        elif choice == '3':
+            continue
+        elif choice == '4':
+            continue
+        elif choice == '5':
+            break
+        else:
+            print("Invalid choice, please try again.")
+
 
 def play_free_play_game(game_state=None):
     print("Free Play game logic goes here.")
     # Placeholder for Free Play game play logic
+
+def create_board(cells):
+    # Create the header row with letters
+    header = ["   "] + [f" {LETTERS[i]} " for i in range(cells)] + ["\n"]
+    seperator = "\n    " + "---+" * (cells -1) + "---"
+
+    # Create the board with underscores and spaces
+    board = [header]
+    for i in range(cells):
+        temp = [f"{i+1:2}  "]
+        for j in range(cells):
+            temp.append("  |")
+        temp[-1] = "  "
+        if i < cells - 1:
+            temp[-1] += seperator
+        board.append(temp)
+    
+    return board
+
+def countPoints():
+    return
 
 if __name__ == '__main__':
     display_main_menu()

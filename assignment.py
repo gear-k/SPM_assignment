@@ -7,6 +7,7 @@
 import json
 import random
 import string
+from class_folder.board import Board
 
 BUILDINGS = ["Residential", "Industry", "Commercial", "Park", "Road"]
 LETTERS = string.ascii_lowercase
@@ -83,7 +84,7 @@ def play_arcade_game(game_state):
     if game_state != None:
         board = game_state
     else:
-        board = create_board(20)
+        board = Board.create_board(20)
 
     turn = 0
     coin = 16
@@ -124,24 +125,6 @@ def play_arcade_game(game_state):
 def play_free_play_game(game_state=None):
     print("Free Play game logic goes here.")
     # Placeholder for Free Play game play logic
-
-def create_board(cells):
-    # Create the header row with letters
-    header = ["   "] + [f" {LETTERS[i]} " for i in range(cells)] + ["\n"]
-    seperator = "\n    " + "---+" * (cells -1) + "---"
-
-    # Create the board with underscores and spaces
-    board = [header]
-    for i in range(cells):
-        temp = [f"{i+1:2}  "]
-        for j in range(cells):
-            temp.append("  |")
-        temp[-1] = "  "
-        if i < cells - 1:
-            temp[-1] += seperator
-        board.append(temp)
-    
-    return board
 
 def countPoints():
     return

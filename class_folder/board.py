@@ -1,24 +1,27 @@
 import string
+
 LETTERS = string.ascii_lowercase
 
 class Board:
     def __init__(self, cells):
         self.cells = cells
 
-    def create_board(cells):
-        # Create the header row with letters
-        header = ["   "] + [f" {LETTERS[i]} " for i in range(cells)] + ["\n"]
-        seperator = "\n    " + "---+" * (cells -1) + "---"
+    @staticmethod
+    def create_board(size):
+        cells = [[" " for _ in range(size)] for _ in range(size)]
+        return cells
 
-        # Create the board with underscores and spaces
-        board = [header]
-        for i in range(cells):
-            temp = [f"{i+1:2}  "]
-            for j in range(cells):
-                temp.append("  |")
-            temp[-1] = "  "
-            if i < cells - 1:
-                temp[-1] += seperator
-            board.append(temp)
+    def display(self):
+        size = len(self.cells)
+        header = ["   "] + [f" {LETTERS[i]} " for i in range(size)] + ["\n"]
+        separator = "\n    " + "---+" * (size - 1) + "---"
         
-        return board
+        print("".join(header))
+        for i in range(size):
+            row = [f"{i+1:2}  "]
+            for j in range(size):
+                row.append(f" {self.cells[i][j]} |")
+            row[-1] = f" {self.cells[i][-1]} "
+            print("".join(row))
+            if i < size - 1:
+                print(separator)

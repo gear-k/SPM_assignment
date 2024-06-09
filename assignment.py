@@ -63,13 +63,6 @@ def load_saved_game():
     except FileNotFoundError:
         print("Saved game not found. Please try again.")
 
-def load_high_scores():
-    try:
-        with open('high_scores.json', 'r') as file:
-            return json.load(file)
-    except FileNotFoundError:
-        return []
-
 def display_high_scores(high_scores):
     print("High Scores:")
     for index, score in enumerate(sorted(high_scores, key=lambda x: x['score'], reverse=True)[:10]):
@@ -192,31 +185,29 @@ def play_arcade_game(board, coins):
         turn += 1
         print(f"Coins: {coins}")
         print(f"Score: {score}")
+
+        # Select two different random buildings
+        building1, building2 = random.sample(BUILDINGS, 2)
+        print(f"Building choices: 1. {building1} 2. {building2}")
         
         board.display()
 
-        choice = input("Enter your choice: 1 to build, 2 to demolish, 3 to save, 4 to end: ")
+        choice = input("Enter your choice (1 or 2) to build, 3 to demolish, 4 to save, 5 to end: ")
 
         if choice == '1':
-            print("Select the building to construct:")
-            for idx, building in enumerate(BUILDINGS, start=1):
-                print(f"{idx}. {building}")
-            building_choice = int(input("Enter the number of the building you want to construct: "))
-            if 1 <= building_choice <= 5:
-                building = BUILDINGS[building_choice - 1]
-                board, coins = build_building(board, building, coins, first_turn)
-                first_turn = False
-            else:
-                print("Invalid building choice. Please try again.")
+            board, coins = build_building(board, building1, coins, first_turn)
         elif choice == '2':
-            print("Demolish functionality not implemented yet.")
+            board, coins = build_building(board, building2, coins, first_turn)
         elif choice == '3':
-            print("Save functionality not implemented yet.")
+            print("Demolish functionality not implemented yet.")
         elif choice == '4':
+            print("Save functionality not implemented yet.")
+        elif choice == '5':
             break
         else:
             print("Invalid choice, please try again.")
 
+        first_turn = False
         score = calculate_score(board)
 
     print("Game over!")
@@ -224,9 +215,9 @@ def play_arcade_game(board, coins):
 
     # Save the high score
     name = input("Enter your name for the high score: ")
-    high_scores = load_high_scores()  # Load high scores correctly
-    high_scores.append({'name': name, 'score': score})  # Append the new score
-    save_high_scores(high_scores)  # Save the updated list of high scores
+    high_scores = load_high_scores()
+    high_scores.append({'name': name, 'score': score})
+    save_high_scores(high_scores)
 
 def expand_board(board):
     size = len(board.cells) + 10

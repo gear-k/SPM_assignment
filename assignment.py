@@ -63,6 +63,13 @@ def load_saved_game():
     except FileNotFoundError:
         print("Saved game not found. Please try again.")
 
+def load_high_scores():
+    try:
+        with open('high_scores.json', 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
 def display_high_scores(high_scores):
     print("High Scores:")
     for index, score in enumerate(sorted(high_scores, key=lambda x: x['score'], reverse=True)[:10]):
@@ -214,6 +221,12 @@ def play_arcade_game(board, coins):
 
     print("Game over!")
     print(f"Final Score: {score}")
+
+    # Save the high score
+    name = input("Enter your name for the high score: ")
+    high_scores = load_high_scores()  # Load high scores correctly
+    high_scores.append({'name': name, 'score': score})  # Append the new score
+    save_high_scores(high_scores)  # Save the updated list of high scores
 
 def expand_board(board):
     size = len(board.cells) + 10

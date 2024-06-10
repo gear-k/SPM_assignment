@@ -18,7 +18,6 @@ def save_high_scores(high_scores):
         json.dump(high_scores, file)
 
 def display_main_menu():
-    high_scores = load_high_scores()
     while True:
         print("Welcome to Ngee Ann City Building Game!")
         print("1. Start New Arcade Game")
@@ -34,6 +33,7 @@ def display_main_menu():
         elif choice == '3':
             load_saved_game()
         elif choice == '4':
+            high_scores = load_high_scores()
             display_high_scores(high_scores)
         elif choice == '5':
             exit_game()

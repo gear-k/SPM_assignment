@@ -159,9 +159,9 @@ def build_building(board, building, coins, first_turn):
         print("No valid positions to place the building.")
         return board, coins
 
-    print(f"Possible positions to place {building}:")
-    for pos in possible_positions:
-        print(f"Row {pos[0] + 1}, Column {LETTERS[pos[1]].upper()}")
+    # print(f"Possible positions to place {building}:")
+    # for pos in possible_positions:
+    #     print(f"Row {pos[0] + 1}, Column {LETTERS[pos[1]].upper()}")
 
     row = int(input("Enter the row to place the building: ")) - 1
     col = LETTERS.index(input("Enter the column to place the building: ").lower())
@@ -186,14 +186,13 @@ def play_arcade_game(board, coins):
         print(f"Coins: {coins}")
         print(f"Score: {score}")
 
+        board.display()
+
         # Select two different random buildings
         building1, building2 = random.sample(BUILDINGS, 2)
         print(f"Building choices: 1. {building1} 2. {building2}")
-        
-        board.display()
 
         choice = input("Enter your choice (1 or 2) to build, 3 to demolish, 4 to save, 5 to end: ")
-
         if choice == '1':
             board, coins = build_building(board, building1, coins, first_turn)
         elif choice == '2':

@@ -13,8 +13,8 @@ class Board:
 
     def display(self):
         size = len(self.cells)
-        header = ["   "] + [f" {LETTERS[i]} " for i in range(size)] + ["\n"]
-        separator = "\n    " + "---+" * (size - 1) + "---"
+        header = ["   "] + [f"  {LETTERS[i]} " for i in range(size)] + ["\n"]
+        separator = "    " + "---+" * (size - 1) + "---"
         
         print("".join(header))
         for i in range(size):

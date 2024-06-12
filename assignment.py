@@ -175,6 +175,11 @@ def build_building(board, building, coins, first_turn):
 
     return board, coins
 
+def demolish_building(board, building, coins, first_turn):
+
+
+    return board, coins
+
 def play_arcade_game(board, coins):
     score = 0
     turn = 0
@@ -198,7 +203,7 @@ def play_arcade_game(board, coins):
         elif choice == '2':
             board, coins = build_building(board, building2, coins, first_turn)
         elif choice == '3':
-            print("Demolish functionality not implemented yet.")
+            board, coins = demolish_building(board, building2, coins, first_turn)
         elif choice == '4':
             print("Save functionality not implemented yet.")
         elif choice == '5':

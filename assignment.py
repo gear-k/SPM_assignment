@@ -304,7 +304,8 @@ def play_free_play_game(board):
                 print("Invalid building choice. Please try again.")
         elif choice == '2':
             print("Select the building to demolish:")
-
+            demolish_building(board, building, coins)
+            
         elif choice == '3':
             print("Save functionality not implemented yet.")
         elif choice == '4':

@@ -156,7 +156,7 @@ def build_building(board, building, coins, first_turn):
     possible_positions = []
     for r in range(len(board.cells)):
         for c in range(len(board.cells[0])):
-            if board.cells[r][c] == "*" and (first_turn or is_valid_placement(board, r, c, first_turn)):
+            if board.cells[r][c] == " " and (first_turn or is_valid_placement(board, r, c, first_turn)):
                 possible_positions.append((r, c))
 
     if not possible_positions:
@@ -190,7 +190,7 @@ def demolish_building(board, building, coins):
     col = LETTERS.index(input("Enter the column to demolish the building: ").lower())
 
     if (row, col) in possible_positions2:
-        board = remove_building(board, building, row, col)
+        board = remove_building(board, row, col)
         coins += 1
         print(f"{building} removed at {row+1}, {LETTERS[col].upper()}")
     else:
@@ -304,7 +304,7 @@ def play_free_play_game(board):
                 print("Invalid building choice. Please try again.")
         elif choice == '2':
             print("Select the building to demolish:")
-            
+
         elif choice == '3':
             print("Save functionality not implemented yet.")
         elif choice == '4':

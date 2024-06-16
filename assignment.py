@@ -179,24 +179,56 @@ def build_building(board, building, coins, first_turn):
 
     return board, coins
 
-def demolish_building(board, building, coins):
-    possible_positions2 = []
+def demolish_building(board, coins):
+    # Find all positions that have buildings or roads
+    possible_positions = []
     for r in range(len(board.cells)):
         for c in range(len(board.cells[0])):
-            if board.cells[r][c] == "*" or building[0]:
-                possible_positions2.append((r, c))
+            if board.cells[r][c] in [b[0] for b in BUILDINGS] or board.cells[r][c] == "*":
+                possible_positions.append((r, c))
 
-    row = int(input("Enter the row to demolish the building: ")) - 1
-    col = LETTERS.index(input("Enter the column to demolish the building: ").lower())
+    if not possible_positions:
+        print("No buildings to demolish.")
+        return board, coins
 
-    if (row, col) in possible_positions2:
-        board = remove_building(board, row, col)
-        coins += 1
-        print(f"{building} removed at {row+1}, {LETTERS[col].upper()}")
-    else:
-        print("No building at this place. Try again.")
+    while True:
+        try:
+            row = int(input("Enter the row to demolish the building: ")) - 1
+            col = LETTERS.index(input("Enter the column to demolish the building: ").lower())
+
+            if (row, col) in possible_positions:
+                building_type = board.cells[row][col]  # Store the type of the building before removing it
+                board = remove_building(board, row, col)
+                coins += 1
+                building_name = "Road" if building_type == "*" else next(name for name in BUILDINGS if name[0] == building_type)
+                print(f"{building_name} removed at {row + 1}, {LETTERS[col].upper()}")
+                break
+            else:
+                print("No building at this place. Try again.")
+        except (ValueError, IndexError):
+            print("Invalid input. Please enter valid row and column.")
 
     return board, coins
+
+#SC OG code for reference - Do not delete yet
+#def demolish_building(board, building, coins):
+#    possible_positions2 = []
+#    for r in range(len(board.cells)):
+#        for c in range(len(board.cells[0])):
+#            if board.cells[r][c] == "*" or building[0]:
+#                possible_positions2.append((r, c))
+
+#    row = int(input("Enter the row to demolish the building: ")) - 1
+#    col = LETTERS.index(input("Enter the column to demolish the building: ").lower())
+
+#    if (row, col) in possible_positions2:
+#        board = remove_building(board, row, col)
+#        coins += 1
+#        print(f"{building} removed at {row+1}, {LETTERS[col].upper()}")
+#    else:
+#        print("No building at this place. Try again.")
+
+#    return board, coins
 
 def play_arcade_game(board, coins):
     score = 0
@@ -215,13 +247,16 @@ def play_arcade_game(board, coins):
         building1, building2 = random.sample(BUILDINGS, 2)
         print(f"Building choices: 1. {building1} 2. {building2}")
 
+        print("Do not demolish buildings when there are none on the board")
         choice = input("Enter your choice (1 or 2) to build, 3 to demolish, 4 to save, 5 to end: ")
         if choice == '1':
             board, coins = build_building(board, building1, coins, first_turn)
         elif choice == '2':
             board, coins = build_building(board, building2, coins, first_turn)
         elif choice == '3':
-            board, coins = demolish_building(board, building1, coins)
+           board, coins = demolish_building(board, coins)
+            #SC OG code for reference - Do not delete yet
+            #board, coins = demolish_building(board, building1, coins)
         elif choice == '4':
             print("Save functionality not implemented yet.")
         elif choice == '5':
@@ -287,6 +322,7 @@ def play_free_play_game(board):
 
         board.display()
 
+        print("Do not demolish buildings when there are none on the board")
         choice = input("Enter your choice: 1 to build, 2 to demolish, 3 to save, 4 to end: ")
 
         if choice == '1':
@@ -303,8 +339,10 @@ def play_free_play_game(board):
             else:
                 print("Invalid building choice. Please try again.")
         elif choice == '2':
-            print("Select the building to demolish:")
-            demolish_building(board, building, coins)
+            demolish_building(board, coins)
+            #SC OG code for reference - Do not delete yet
+            #print("Select the building to demolish:")
+            #demolish_building(board, building, coins)
             
         elif choice == '3':
             print("Save functionality not implemented yet.")

@@ -235,7 +235,7 @@ def play_arcade_game(board, coins):
     turn = 0
     first_turn = True
 
-    while coins > 0:
+    while coins > 0 and any(" " in row for row in board.cells):
         print(f"Turn: {turn}")
         turn += 1
         print(f"Coins: {coins}")
@@ -254,11 +254,9 @@ def play_arcade_game(board, coins):
         elif choice == '2':
             board, coins = build_building(board, building2, coins, first_turn)
         elif choice == '3':
-           board, coins = demolish_building(board, coins)
-            #SC OG code for reference - Do not delete yet
-            #board, coins = demolish_building(board, building1, coins)
+            board, coins = demolish_building(board, coins)
         elif choice == '4':
-            print("Save functionality not implemented yet.")
+            save_game(board, coins, 'arcade')
         elif choice == '5':
             break
         else:
@@ -267,14 +265,7 @@ def play_arcade_game(board, coins):
         first_turn = False
         score = calculate_score(board)
 
-    print("Game over!")
-    print(f"Final Score: {score}")
-
-    # Save the high score
-    name = input("Enter your name for the high score: ")
-    high_scores = load_high_scores()
-    high_scores.append({'name': name, 'score': score})
-    save_high_scores(high_scores)
+    end_game(score)
 
 def expand_board(board):
     size = len(board.cells) + 10
@@ -314,8 +305,9 @@ def play_free_play_game(board):
     coins = 100  # Starting with a large number of coins to simulate free play
     turn = 0
     first_turn = True
+    loss_streak = 0
 
-    while True:
+    while loss_streak < 20:
         print(f"Turn: {turn}")
         turn += 1
         print(f"Coins: {coins}")
@@ -340,12 +332,8 @@ def play_free_play_game(board):
                 print("Invalid building choice. Please try again.")
         elif choice == '2':
             demolish_building(board, coins)
-            #SC OG code for reference - Do not delete yet
-            #print("Select the building to demolish:")
-            #demolish_building(board, building, coins)
-            
         elif choice == '3':
-            print("Save functionality not implemented yet.")
+            save_game(board, coins, 'free_play')
         elif choice == '4':
             break
         else:
@@ -355,7 +343,33 @@ def play_free_play_game(board):
         coins += income - upkeep
         print(f"Income: {income}, Upkeep: {upkeep}, Net coins: {coins}")
 
+        if coins < 0:
+            loss_streak += 1
+        else:
+            loss_streak = 0
+
+    end_game(calculate_score(board))
+
+def save_game(board, coins, mode):
+    filename = input("Enter the filename to save the game: ")
+    game_state = {
+        'mode': mode,
+        'board': board.cells,
+        'coins': coins
+    }
+    with open(filename, 'w') as file:
+        json.dump(game_state, file)
+    print(f"Game saved as {filename}")
+
+def end_game(score):
     print("Game over!")
+    print(f"Final Score: {score}")
+
+    # Save the high score
+    name = input("Enter your name for the high score: ")
+    high_scores = load_high_scores()
+    high_scores.append({'name': name, 'score': score})
+    save_high_scores(high_scores)
 
 def countPoints():
     return

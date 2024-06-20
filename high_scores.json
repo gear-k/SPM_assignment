@@ -1,1 +1,5 @@
-[{"name": "yes", "score": 1}, {"name": "yea", "score": 0}, {"name": "is", "score": 4}]
+[
+  { "name": "yes", "score": 1 },
+  { "name": "yea", "score": 0 },
+  { "name": "is", "score": 4 }
+]

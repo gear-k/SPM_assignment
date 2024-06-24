@@ -163,24 +163,23 @@ def build_building(board, building, coins, first_turn):
         print("No valid positions to place the building.")
         return board, coins
 
-    # print(f"Possible positions to place {building}:")
-    # for pos in possible_positions:
-    #     print(f"Row {pos[0] + 1}, Column {LETTERS[pos[1]].upper()}")
-
-    row = int(input("Enter the row to place the building: ")) - 1
-    col = LETTERS.index(input("Enter the column to place the building: ").lower())
-
-    if (row, col) in possible_positions:
-        board = place_building(board, building, row, col)
-        coins -= 1
-        print(f"{building} placed at {row+1}, {LETTERS[col].upper()}")
-    else:
-        print("Invalid placement. Try again.")
+    while True:
+        try:
+            row = int(input("Enter the row to place the building: ")) - 1
+            col = LETTERS.index(input("Enter the column to place the building: ").lower())
+            if (row, col) in possible_positions:
+                board = place_building(board, building, row, col)
+                coins -= 1
+                print(f"{building} placed at {row+1}, {LETTERS[col].upper()}")
+                break
+            else:
+                print("Invalid placement. Try again.")
+        except (ValueError, IndexError):
+            print("Invalid input. Please enter valid row and column.")
 
     return board, coins
 
 def demolish_building(board, coins):
-    # Find all positions that have buildings or roads
     possible_positions = []
     for r in range(len(board.cells)):
         for c in range(len(board.cells[0])):
@@ -195,9 +194,8 @@ def demolish_building(board, coins):
         try:
             row = int(input("Enter the row to demolish the building: ")) - 1
             col = LETTERS.index(input("Enter the column to demolish the building: ").lower())
-
             if (row, col) in possible_positions:
-                building_type = board.cells[row][col]  # Store the type of the building before removing it
+                building_type = board.cells[row][col]
                 board = remove_building(board, row, col)
                 coins += 1
                 building_name = "Road" if building_type == "*" else next(name for name in BUILDINGS if name[0] == building_type)
@@ -210,26 +208,6 @@ def demolish_building(board, coins):
 
     return board, coins
 
-#SC OG code for reference - Do not delete yet
-#def demolish_building(board, building, coins):
-#    possible_positions2 = []
-#    for r in range(len(board.cells)):
-#        for c in range(len(board.cells[0])):
-#            if board.cells[r][c] == "*" or building[0]:
-#                possible_positions2.append((r, c))
-
-#    row = int(input("Enter the row to demolish the building: ")) - 1
-#    col = LETTERS.index(input("Enter the column to demolish the building: ").lower())
-
-#    if (row, col) in possible_positions2:
-#        board = remove_building(board, row, col)
-#        coins += 1
-#        print(f"{building} removed at {row+1}, {LETTERS[col].upper()}")
-#    else:
-#        print("No building at this place. Try again.")
-
-#    return board, coins
-
 def play_arcade_game(board, coins):
     score = 0
     turn = 0
@@ -238,16 +216,12 @@ def play_arcade_game(board, coins):
     while coins > 0 and any(" " in row for row in board.cells):
         print(f"Turn: {turn}")
         turn += 1
-        print(f"Coins: {coins}")
-        print(f"Score: {score}")
 
         board.display()
 
-        # Select two different random buildings
         building1, building2 = random.sample(BUILDINGS, 2)
         print(f"Building choices: 1. {building1} 2. {building2}")
 
-        print("Do not demolish buildings when there are none on the board")
         choice = input("Enter your choice (1 or 2) to build, 3 to demolish, 4 to save, 5 to end: ")
         if choice == '1':
             board, coins = build_building(board, building1, coins, first_turn)
@@ -263,7 +237,12 @@ def play_arcade_game(board, coins):
             print("Invalid choice, please try again.")
 
         first_turn = False
+        income, upkeep = calculate_upkeep(board)
+        coins += income - upkeep
         score = calculate_score(board)
+        
+        print(f"Income: {income}, Upkeep: {upkeep}, Net coins: {coins}")
+        print(f"Score: {score}")
 
     end_game(score)
 
@@ -279,10 +258,15 @@ def expand_board(board):
 def calculate_upkeep(board):
     coins = 0
     upkeep = 0
+    residential_clusters = []
     for r in range(len(board.cells)):
         for c in range(len(board.cells[0])):
             if board.cells[r][c] == 'R':
                 coins += 1
+                # Find cluster of residential buildings
+                if not any((r, c) in cluster for cluster in residential_clusters):
+                    cluster = find_cluster(board, r, c, 'R')
+                    residential_clusters.append(cluster)
                 if (r > 0 and board.cells[r-1][c] != 'R') or \
                    (r < len(board.cells) - 1 and board.cells[r+1][c] != 'R') or \
                    (c > 0 and board.cells[r][c-1] != 'R') or \
@@ -299,10 +283,23 @@ def calculate_upkeep(board):
             elif board.cells[r][c] == '*':
                 if not is_valid_placement(board, r, c, False):
                     upkeep += 1
+    upkeep += len(residential_clusters)
     return coins, upkeep
 
+def find_cluster(board, row, col, building_type):
+    cluster = [(row, col)]
+    to_check = [(row, col)]
+    while to_check:
+        r, c = to_check.pop()
+        adjacent_positions = [(r-1, c), (r+1, c), (r, c-1), (r, c+1)]
+        for rr, cc in adjacent_positions:
+            if 0 <= rr < len(board.cells) and 0 <= cc < len(board.cells[0]) and board.cells[rr][cc] == building_type and (rr, cc) not in cluster:
+                cluster.append((rr, cc))
+                to_check.append((rr, cc))
+    return cluster
+
 def play_free_play_game(board):
-    coins = 100  # Starting with a large number of coins to simulate free play
+    coins = 100
     turn = 0
     first_turn = True
     loss_streak = 0
@@ -310,7 +307,6 @@ def play_free_play_game(board):
     while loss_streak < 20:
         print(f"Turn: {turn}")
         turn += 1
-        print(f"Coins: {coins}")
 
         board.display()
 
@@ -321,17 +317,20 @@ def play_free_play_game(board):
             print("Select the building to construct:")
             for idx, building in enumerate(BUILDINGS, start=1):
                 print(f"{idx}. {building}")
-            building_choice = int(input("Enter the number of the building you want to construct: "))
-            if 1 <= building_choice <= 5:
-                building = BUILDINGS[building_choice - 1]
-                board, coins = build_building(board, building, coins, first_turn)
-                first_turn = False
-                if any(r in [0, len(board.cells)-1] or c in [0, len(board.cells[0])-1] for r, c in [(r, c) for r in range(len(board.cells)) for c in range(len(board.cells[0])) if board.cells[r][c] != " "]):
-                    expand_board(board)
-            else:
-                print("Invalid building choice. Please try again.")
+            try:
+                building_choice = int(input("Enter the number of the building you want to construct: "))
+                if 1 <= building_choice <= 5:
+                    building = BUILDINGS[building_choice - 1]
+                    board, coins = build_building(board, building, coins, first_turn)
+                    first_turn = False
+                    if any(r in [0, len(board.cells)-1] or c in [0, len(board.cells[0])-1] for r, c in [(r, c) for r in range(len(board.cells)) for c in range(len(board.cells[0])) if board.cells[r][c] != " "]):
+                        expand_board(board)
+                else:
+                    print("Invalid building choice. Please try again.")
+            except ValueError:
+                print("Invalid input. Please enter a number between 1 and 5.")
         elif choice == '2':
-            demolish_building(board, coins)
+            board, coins = demolish_building(board, coins)
         elif choice == '3':
             save_game(board, coins, 'free_play')
         elif choice == '4':
@@ -341,14 +340,17 @@ def play_free_play_game(board):
 
         income, upkeep = calculate_upkeep(board)
         coins += income - upkeep
+        score = calculate_score(board)
+        
         print(f"Income: {income}, Upkeep: {upkeep}, Net coins: {coins}")
+        print(f"Score: {score}")
 
         if coins < 0:
             loss_streak += 1
         else:
             loss_streak = 0
 
-    end_game(calculate_score(board))
+    end_game(score)
 
 def save_game(board, coins, mode):
     filename = input("Enter the filename to save the game: ")
@@ -365,14 +367,10 @@ def end_game(score):
     print("Game over!")
     print(f"Final Score: {score}")
 
-    # Save the high score
     name = input("Enter your name for the high score: ")
     high_scores = load_high_scores()
     high_scores.append({'name': name, 'score': score})
     save_high_scores(high_scores)
-
-def countPoints():
-    return
 
 if __name__ == '__main__':
     display_main_menu()

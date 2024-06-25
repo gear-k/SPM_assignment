@@ -5,20 +5,53 @@ from class_folder.board import Board
 
 BUILDINGS = ["Residential", "Industry", "Commercial", "Park", "Road"]
 LETTERS = string.ascii_lowercase
+ART = """
+                            *##*                            
+                         *##*  *##*                         
+                     *###*        *##*                      
+                  *###*        @@@   *##**                  
+               *###*        @@@@@@@     *##**               
+            *###         @@@@@@@@@          ###=            
+         *##*         @@@@@@@@@@@-     @@@@    *##*         
+      *##*         @@@@@@@  @@@@@   @@@@@@@       *##*      
+      ####*     @@@@@@@    @@@@@ @@@@@@@        **####      
+      #*  *##**  @@@      @@@@@@@@@@@        **##*  ##      
+      #*     *##*         @@@@@@@@        =*##*     ##      
+      #*        *###     @@@@@          ###-        ##      
+      #*           *###*            *###            ##      
+      #*        @@@   **##*      *##**  @@@@@@      ##      
+      #*       @@@@@     *###**##**   @@@@@@@@@     *#      
+      #*       @@@@@         ##      @@@@  @@@@     *#      
+      #*      -@@@@@         ##     @@@    *@       *#      
+      #*      @@@@@@@        ##    @@@              *#      
+      #*      @@@%@@@        ##    @@@              *#      
+      #*     @@@@ @@@        ##    @@@      @@@     *#      
+      #*     @@@@@@@@#       ##    @@@     +@@@     *#      
+      #*    @@@@@@@@@@       ##    @@@.    @@@      *#      
+      ##*   +@@@  @@@@       ##    @@@@ .@@@@      *##      
+        *##*       @@@       ##    @@@@@@@@-    ###*        
+           *##*=   .@@@      ##     @@@@@   *###*           
+              *###*  :@      ##          *###*              
+                 *###*       ##       *###-                 
+                     ###*    ##    *##*                     
+                        *##*:## *##*                        
+                           *####*                           
+"""
 
 def load_high_scores():
     try:
-        with open('high_scores.json', 'r') as file:
+        with open('storage/high_scores.json', 'r') as file:
             return json.load(file)
     except FileNotFoundError:
         return []
 
 def save_high_scores(high_scores):
-    with open('high_scores.json', 'w') as file:
+    with open('storage/high_scores.json', 'w') as file:
         json.dump(high_scores, file)
 
 def display_main_menu():
     while True:
+        print(ART)
         print("Welcome to Ngee Ann City Building Game!")
         print("1. Start New Arcade Game")
         print("2. Start New Free Play Game")
@@ -42,19 +75,19 @@ def display_main_menu():
             print("Invalid choice, please try again.")
 
 def start_new_arcade_game():
-    print("Starting new Arcade game...")
+    print("Starting new Arcade game...\n")
     board = Board(Board.create_board(20))
     play_arcade_game(board, 16)
 
 def start_new_free_play_game():
-    print("Starting new Free Play game...")
+    print("Starting new Free Play game...\n")
     board = Board(Board.create_board(5))
     play_free_play_game(board)
 
 def load_saved_game():
     filename = input("Enter the filename of the saved game: ")
     try:
-        with open(filename, 'r') as file:
+        with open("storage/" + filename, 'r') as file:
             game_state = json.load(file)
             if game_state['mode'] == 'arcade':
                 play_arcade_game(Board(game_state['board']), game_state['coins'])
@@ -359,7 +392,7 @@ def save_game(board, coins, mode):
         'board': board.cells,
         'coins': coins
     }
-    with open(filename, 'w') as file:
+    with open("storage/" + filename, 'w') as file:
         json.dump(game_state, file)
     print(f"Game saved as {filename}")
 

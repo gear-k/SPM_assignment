@@ -23,7 +23,7 @@ class Board:
     def display(self):
         size = len(self.cells)
         header = ["    "] + [f"  {LETTERS[i]} " for i in range(size)]
-        separator = "    +" + "---+" * (size - 1) + "---+"
+        separator = "    +" + "---+" * size + "+"
 
         print("".join(header))
         for i in range(size):
@@ -31,18 +31,23 @@ class Board:
             row = [f"{i+1:2}  "]
             for j in range(size):
                 row.append(f"| {self.cells[i][j]} ")
-            row += "|"
+            row.append("|")
             print("".join(row))
         print(separator)
 
     def isEmpty(self):
-        if all(all(cell == " " for cell in row) for row in self.cells):
-            return True
+        return all(all(cell == " " for cell in row) for row in self.cells)
 
     def isValid(self, row, col):
-        if self.cells[row][col] == " ":
+        if 0 <= row < len(self.cells) and 0 <= col < len(self.cells) and self.cells[row][col] == " ":
             adjacent_positions = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
             for r, c in adjacent_positions:
-                if self.cells[r][c] != " ":
+                if 0 <= r < len(self.cells) and 0 <= c < len(self.cells[0]) and self.cells[r][c] != " ":
                     return True
         return False
+
+# Example usage:
+# board = Board.create_board(20)
+# board.display()
+# board.expand_board()
+# board.display()

@@ -1,6 +1,13 @@
 import string
 
 LETTERS = string.ascii_lowercase
+BUILDINGS = {
+    "*": "Road",
+    "O": "Park",
+    "R": "Residential",
+    "I": "Industry",
+    "C": "Commercial",
+}
 
 class Building:
     def __init__(self, building):
@@ -50,15 +57,6 @@ class Building:
                 print("Invalid input. Please enter a valid row and column.")
 
         return board
-
-
-BUILDINGS = {
-    "*": "Road",
-    "O": "Park",
-    "R": "Residential",
-    "I": "Industry",
-    "C": "Commercial",
-}
 
 # Example usage:
 # from class_folder.board import Board

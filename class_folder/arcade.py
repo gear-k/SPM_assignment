@@ -4,6 +4,7 @@ from class_folder.building import Building
 from class_folder.external import External
 from class_folder.score import Score
 
+# Define the possible building types and their symbols
 BUILDINGS = {
     "*": "Road",
     "O": "Park",

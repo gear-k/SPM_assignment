@@ -23,7 +23,7 @@ class Board:
     def display(self):
         size = len(self.cells)
         header = ["    "] + [f"  {LETTERS[i]} " for i in range(size)]
-        separator = "    +" + "---+" * size + "+"
+        separator = "    +" + "---+" * size
 
         print("".join(header))
         for i in range(size):

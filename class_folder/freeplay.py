@@ -98,49 +98,29 @@ class Freeplay:
     @staticmethod
     def calculate_upkeep(board):
         # Calculates the income and upkeep of the current board state
-        coins = 0
+        income = 0
         upkeep = 0
-        residential_clusters = []
         for r in range(len(board.cells)):
             for c in range(len(board.cells[0])):
                 if board.cells[r][c] == 'R':
-                    coins += 1
                     # Find cluster of residential buildings
-                    if not any((r, c) in cluster for cluster in residential_clusters):
-                        cluster = Freeplay.find_cluster(board, r, c, 'R')
-                        residential_clusters.append(cluster)
-                    if (r > 0 and board.cells[r-1][c] != 'R') or \
-                    (r < len(board.cells) - 1 and board.cells[r+1][c] != 'R') or \
-                    (c > 0 and board.cells[r][c-1] != 'R') or \
-                    (c < len(board.cells[0]) - 1 and board.cells[r][c+1] != 'R'):
+                    income += 1
+                    if r + 1 < len(board.cells) and board.cells[r + 1][c] == 'R':
+                        upkeep += 1
+                    if c + 1 < len(board.cells) and board.cells[r][c + 1] == 'R':
                         upkeep += 1
                 elif board.cells[r][c] == 'I':
-                    coins += 2
+                    income += 2
                     upkeep += 1
                 elif board.cells[r][c] == 'C':
-                    coins += 3
+                    income += 3
                     upkeep += 2
                 elif board.cells[r][c] == 'O':
                     upkeep += 1
                 elif board.cells[r][c] == '*':
                     if not board.isValid(r, c):
                         upkeep += 1
-        upkeep += len(residential_clusters)
-        return coins, upkeep
-
-    @staticmethod
-    def find_cluster(board, row, col, building_type):
-        # Finds and returns all connected buildings of the same type starting from (row, col)
-        cluster = [(row, col)]
-        to_check = [(row, col)]
-        while to_check:
-            r, c = to_check.pop()
-            adjacent_positions = [(r-1, c), (r+1, c), (r, c-1), (r, c+1)]
-            for rr, cc in adjacent_positions:
-                if 0 <= rr < len(board.cells) and 0 <= cc < len(board.cells[0]) and board.cells[rr][cc] == building_type and (rr, cc) not in cluster:
-                    cluster.append((rr, cc))
-                    to_check.append((rr, cc))
-        return cluster
+        return income, upkeep
 
 # Uncomment the following line to start a new Free Play game:
 # Freeplay.start_new_free_play_game()

@@ -1,13 +1,12 @@
 import json
 import os
-from board import Board
 
 class External:
     @staticmethod
     def save_game(board, turn, spec, mode):
         while True:
             filename = input("Enter the filename to save the game: ")
-            if not os.path.isfile(filename):
+            if not os.path.isfile("storage/" + filename):
                 break
             print("File name already in use. PLease try again.")
 
@@ -17,7 +16,7 @@ class External:
             'turn': turn,
             'spec': spec
         }
-        with open("../storage/" + filename, 'w') as file:
+        with open("storage/" + filename, 'w') as file:
             json.dump(game_state, file)
         print(f"Game saved as {filename}")
 
@@ -26,17 +25,14 @@ class External:
         try:
             with open("storage/" + filename, 'r') as file:
                 game_state = json.load(file)
-                # if game_state['mode'] == 'arcade':
-                #     Arcade.play_arcade_game(Board(game_state['board']), game_state['coins'])
-                # elif game_state['mode'] == 'freeplay':
-                #     play_free_play_game(Board(game_state['board']), , game_state['coins'])
+                return game_state
         except FileNotFoundError:
             print("Saved game not found. Please try again.")
 
     @staticmethod
     def load_high_scores():
         try:
-            with open('../storage/high_scores.json', 'r') as file:
+            with open('storage/high_scores.json', 'r') as file:
                 return json.load(file)
         except FileNotFoundError:
             return []
@@ -57,5 +53,5 @@ class External:
         high_scores.append({'name': name, 'score': score, 'track': len(high_scores)})
         high_scores.sort(key=lambda x: (x['score'], x['track']), reverse=True)
 
-        with open('../storage/high_scores.json', 'w') as file:
+        with open('storage/high_scores.json', 'w') as file:
             json.dump(high_scores, file)

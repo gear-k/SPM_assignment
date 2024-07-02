@@ -20,7 +20,6 @@ class Board:
         self.cells = new_board
         print("City expanded!")
 
-
     def display(self):
         size = len(self.cells)
         header = ["    "] + [f"  {LETTERS[i]} " for i in range(size)]

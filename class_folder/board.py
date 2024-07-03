@@ -1,4 +1,5 @@
 import string
+import math
 
 LETTERS = string.ascii_lowercase
 
@@ -22,10 +23,12 @@ class Board:
 
     def display(self):
         size = len(self.cells)
-        header = ["    "] + [f"  {LETTERS[i]} " for i in range(size)]
+        header1 = ["    "] + [f'  {LETTERS[i % 26]} ' for i in range(size)]
+        header2 = ["    "] + [f' ({LETTERS[i // 26]}){" "*25*4}' for i in range(size) if i % 26 == 0]
         separator = "    +" + "---+" * size
 
-        print("".join(header))
+        print("".join(header2))
+        print("".join(header1))
         for i in range(size):
             print(separator)
             row = [f"{i+1:2}  "]
@@ -47,7 +50,7 @@ class Board:
         return False
 
 # Example usage:
-# board = Board.create_board(20)
+# board = Board.create_board(53)
 # board.display()
 # board.expand_board()
 # board.display()

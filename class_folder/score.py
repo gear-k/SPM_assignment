@@ -3,13 +3,12 @@ class Score:
     def calculate_score(board):
         # Calculate the total score for the board
         score = 0
+        score += Score.calculate_industry_score(board, r, c)
         for r in range(len(board.cells)):
             for c in range(len(board.cells[0])):
                 try:
                     if board.cells[r][c] == 'R':
                         score += Score.calculate_residential_score(board, r, c)
-                    elif board.cells[r][c] == 'I':
-                        score += Score.calculate_industry_score(board, r, c)
                     elif board.cells[r][c] == 'C':
                         score += Score.calculate_commercial_score(board, r, c)
                     elif board.cells[r][c] == 'O':
@@ -33,7 +32,7 @@ class Score:
                     elif board.cells[r][c] == 'O':
                         score += 2
                     elif board.cells[r][c] == 'I':
-                        score += 1
+                        score = 1
         except Exception as e:
             print(f"Error calculating residential score for cell ({row}, {col}): {e}")
         return score

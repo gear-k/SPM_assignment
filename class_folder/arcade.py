@@ -15,6 +15,7 @@ BUILDINGS = {
 
 class Arcade:
     def __init__(self, turn, score, coins, board):
+        self.mode = "Arcade"
         self.turn = turn
         self.score = score
         self.coins = coins
@@ -30,24 +31,25 @@ class Arcade:
             print(f"An error occurred while starting a new arcade game: {e}")
 
     def build_option(self, building1, building2):
-        try:
-            print("Select the building to construct:")
-            print(f"1. {building1.building}\n2. {building2.building}")
+        print("Select the building to construct:")
+        print(f"1. {building1.building}\n2. {building2.building}")
 
-            building_choice = int(input("Enter building option you want to construct: "))
-            if building_choice == 1:
-                return building1.build_building(self.board)
-            elif building_choice == 2:
-                return building2.build_building(self.board)
-            else:
-                print("Invalid building choice. Please try again.")
-        except ValueError:
-            print("Invalid input. Please enter 1 or 2.")
-        except Exception as e:
-            print(f"An error occurred while building: {e}")
+        while True:
+            try:
+                building_choice = int(input("Enter building option you want to construct: "))
+                if building_choice == 1:
+                    self.board = building1.build_building(self.board, self.mode)
+                elif building_choice == 2:
+                    self.board = building2.build_building(self.board, self.mode)
+                else:
+                    print("Invalid building choice. Please try again.")
+                    continue
+                break
+            except ValueError:
+                print("Invalid input. Please enter 1 or 2.")
+            except Exception as e:
+                print(f"An error occurred while building: {e}")
         
-        return self.board  # Return the board in all cases
-
     def play_arcade_game(self):
         try:
             if self.board is None:
@@ -56,40 +58,49 @@ class Arcade:
                 raise ValueError("Board must have cells initialized before starting the game.")
             
             while self.coins > 0 and any(" " in row for row in self.board.cells):
-                try:
-                    print(f"Turn: {self.turn}")
-                    print(f"Coins: {self.coins}")
-                    self.score = Score.calculate_score(self.board)
-                    print(f"Score: {self.score}")
-                    self.turn += 1
+                print(f"Turn: {self.turn}")
+                print(f"Coins: {self.coins}")
+                self.score = Score.calculate_score(self.board)
+                print(f"Score: {self.score}")
+                self.turn += 1
 
-                    self.board.display()
+                self.board.display()
 
-                    r1, r2 = random.sample(list(BUILDINGS.values()), 2)
-                    building1, building2 = Building(r1), Building(r2)
-                    print(f"Building choices: {building1.building}, {building2.building}")
+                r1, r2 = random.sample(list(BUILDINGS.values()), 2)
+                building1, building2 = Building(r1), Building(r2)
+                print(f"Building choices: {building1.building}, {building2.building}")
 
-                    choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ")
-                    if choice == '1':
-                        self.board = self.build_option(building1, building2)
-                        self.coins -= 1
-                    elif choice == '2' and not self.board.isEmpty():
-                        self.board = Building.demolish_building(self.board, BUILDINGS)
-                        self.coins -= 1
-                    elif choice == '3':
-                        External.save_game(self.board, self.turn, self.coins, 'arcade')
-                        self.turn -= 1
-                    elif choice == '4':
-                        break
-                    else:
-                        print("Invalid choice, please try again.")
-                        self.turn -= 1
-                except Exception as e:
-                    print(f"An error occurred during the game loop: {e}")
+                choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ")
+                if choice == '1':
+                    self.build_option(building1, building2)
+                    self.coins -= 1
+                elif choice == '2' and not self.board.isEmpty():
+                    self.board = Building.demolish_building(self.board, BUILDINGS)
+                    self.coins -= 1
+                elif choice == '3':
+                    External.save_game(self.board, self.turn, self.coins, 'arcade')
+                    self.turn -= 1
+                elif choice == '4':
+                    break
+                else:
+                    print("Invalid choice, please try again.")
+                    self.turn -= 1
+
+                self.calculate_upkeep()
 
             External.end_game(self.score)
         except Exception as e:
             print(f"An error occurred while playing the arcade game: {e}")
+
+    def calculate_upkeep(self):
+        for r in range(len(self.board.cells)):
+            for c in range(len(self.board.cells[0])):
+                if self.board.cells[r][c] == 'I' or self.board.cells[r][c] == 'C':
+                    adjacent_positions = [(r-1, c), (r+1, c), (r, c-1), (r, c+1)]
+                    for rr, cc in adjacent_positions:
+                        if 0 <= rr < len(self.board.cells) and 0 <= cc < len(self.board.cells[0]) and self.board.cells[r][c] == "R":
+                            self.coins += 1
+                    
 
 # To start a new arcade game, you can uncomment the following line:
 # Arcade.start_new_arcade_game()

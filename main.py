@@ -59,7 +59,7 @@ def display_main_menu():
                     if game['mode'] == 'arcade':
                         Arcade(0, game['turn'], game['spec'], Board(game['board'])).play_arcade_game()
                     elif game['mode'] == 'freeplay':
-                        Freeplay(0, game['turn'], game['spec'], Board(game['board'])).play_free_play_game()
+                        Freeplay("Easy", 0, game['turn'], game['spec'], Board(game['board'])).play_free_play_game()
             elif choice == '4':
                 high_scores = External.load_high_scores()
                 External.display_high_scores(high_scores)

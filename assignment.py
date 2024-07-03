@@ -220,7 +220,7 @@ def demolish_building(board, coins):
                 possible_positions.append((r, c))
 
     if not possible_positions:
-        print("No buildings to demolish.")
+        print("There are no buildings on the board to demolish.")
         return board, coins
 
     while True:
@@ -343,7 +343,7 @@ def play_free_play_game(board):
 
         board.display()
 
-        print("Do not demolish buildings when there are none on the board")
+        print("There are no buildings on the board to demolish.")
         choice = input("Enter your choice: 1 to build, 2 to demolish, 3 to save, 4 to end: ")
 
         if choice == '1':

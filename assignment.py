@@ -407,3 +407,4 @@ def end_game(score):
 
 if __name__ == '__main__':
     display_main_menu()
+

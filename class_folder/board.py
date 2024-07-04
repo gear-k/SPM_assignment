@@ -27,7 +27,7 @@ class Board:
         header2 = ["    "] + [f' ({LETTERS[i // 26]}){" "*25*4}' for i in range(size) if i % 26 == 0]
         separator = "    +" + "---+" * size
 
-        print("".join(header2))
+        print("".join(header2).rstrip())
         print("".join(header1))
         for i in range(size):
             print(separator)

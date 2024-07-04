@@ -3,7 +3,7 @@ class Score:
     def calculate_score(board):
         # Calculate the total score for the board
         score = 0
-        score += Score.calculate_industry_score(board, r, c)
+        score += Score.calculate_industry_score(board)
         for r in range(len(board.cells)):
             for c in range(len(board.cells[0])):
                 try:
@@ -38,12 +38,12 @@ class Score:
         return score
 
     @staticmethod
-    def calculate_industry_score(board, row, col):
+    def calculate_industry_score(board):
         # Calculate the score for an industry building
         try:
             return sum(1 for r in range(len(board.cells)) for c in range(len(board.cells[0])) if board.cells[r][c] == 'I')
         except Exception as e:
-            print(f"Error calculating industry score for cell ({row}, {col}): {e}")
+            print(f"Error calculating industry score for cell {e}")
             return 0
 
     @staticmethod

@@ -64,7 +64,7 @@ class Arcade:
                 print(f"Score: {self.score}")
                 self.turn += 1
 
-                self.board.display()
+                self.board.display(0)
 
                 r1, r2 = random.sample(list(BUILDINGS.values()), 2)
                 building1, building2 = Building(r1), Building(r2)

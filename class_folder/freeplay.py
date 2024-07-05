@@ -63,7 +63,8 @@ class Freeplay:
                 print(f"Score: {self.score}")
                 self.turn += 1
                 
-                self.board.display()
+                self.board.display(0)
+                self.board.check_arrow()
 
                 choice = input("Enter your choice: 1 to build, 2 to demolish, 3 to save, 4 to end: ")
                 if choice == '1':

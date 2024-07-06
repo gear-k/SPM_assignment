@@ -27,7 +27,11 @@ class Freeplay:
         try:
             print("Starting new Free Play game...\n")
             board = Board.create_board(5)
-            Freeplay("Easy", 1, 0, 0, board).play_free_play_game()
+            difficulty = input("Choose difficulty: Easy (1), Hard (2) ")
+            if difficulty == '1':
+                Freeplay("Easy", 1, 0, 0, board).play_free_play_game()
+            elif difficulty == '2':
+                Freeplay("Hard", 1, 0, 0, board).play_free_play_game()            
         except Exception as e:
             print(f"An error occurred while starting a new free play game: {e}")
 

@@ -24,26 +24,36 @@ class Score:
         # Calculate the score for a residential building
         score = 0
         adjacent_positions = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
+        adjacent_industry = False
+
         try:
             for r, c in adjacent_positions:
                 if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]):
-                    if board.cells[r][c] == 'R' or board.cells[r][c] == 'C':
-                        score += 1
-                    elif board.cells[r][c] == 'O':
-                        score += 2
-                    elif board.cells[r][c] == 'I':
-                        score = 1
+                    if board.cells[r][c] == 'I':
+                        adjacent_industry = True
+                        break
+
+            if adjacent_industry:
+                score = 1
+            else:
+                for r, c in adjacent_positions:
+                    if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]):
+                        if board.cells[r][c] == 'R' or board.cells[r][c] == 'C':
+                            score += 1
+                        elif board.cells[r][c] == 'O':
+                            score += 2
         except Exception as e:
             print(f"Error calculating residential score for cell ({row}, {col}): {e}")
+        
         return score
 
     @staticmethod
     def calculate_industry_score(board):
-        # Calculate the score for an industry building
+        # Calculate the score for all industry buildings
         try:
             return sum(1 for r in range(len(board.cells)) for c in range(len(board.cells[0])) if board.cells[r][c] == 'I')
         except Exception as e:
-            print(f"Error calculating industry score for cell {e}")
+            print(f"Error calculating industry score: {e}")
             return 0
 
     @staticmethod
@@ -51,12 +61,14 @@ class Score:
         # Calculate the score for a commercial building
         score = 0
         adjacent_positions = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
+
         try:
             for r, c in adjacent_positions:
                 if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]) and board.cells[r][c] == 'C':
                     score += 1
         except Exception as e:
             print(f"Error calculating commercial score for cell ({row}, {col}): {e}")
+        
         return score
 
     @staticmethod
@@ -64,22 +76,31 @@ class Score:
         # Calculate the score for a park
         score = 0
         adjacent_positions = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
+
         try:
             for r, c in adjacent_positions:
                 if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]) and board.cells[r][c] == 'O':
                     score += 1
         except Exception as e:
             print(f"Error calculating park score for cell ({row}, {col}): {e}")
+        
         return score
 
     @staticmethod
     def calculate_road_score(board, row, col):
         # Calculate the score for a road
         score = 0
+
         try:
             for c in range(len(board.cells[0])):
                 if board.cells[row][c] == '*':
                     score += 1
         except Exception as e:
             print(f"Error calculating road score for cell ({row}, {col}): {e}")
+        
         return score
+
+    @staticmethod
+    def update_score_for_turn(board):
+        # This function should be called at the end of each turn to update the score
+        return Score.calculate_score(board)

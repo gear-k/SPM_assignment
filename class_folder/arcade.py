@@ -38,9 +38,9 @@ class Arcade:
             try:
                 building_choice = int(input("Enter building option you want to construct: "))
                 if building_choice == 1:
-                    self.board = building1.build_building(self.board, self.mode)
+                    self.board = building1.build_building(self.board, self.mode, self)
                 elif building_choice == 2:
-                    self.board = building2.build_building(self.board, self.mode)
+                    self.board = building2.build_building(self.board, self.mode, self)
                 else:
                     print("Invalid building choice. Please try again.")
                     continue
@@ -75,7 +75,7 @@ class Arcade:
                     self.build_option(building1, building2)
                     self.coins -= 1
                 elif choice == '2' and not self.board.isEmpty():
-                    self.board = Building.demolish_building(self.board, BUILDINGS)
+                    self.board = Building.demolish_building(self.board, BUILDINGS, self)
                     self.coins -= 1
                 elif choice == '3':
                     External.save_game(self.board, self.turn, self.coins, 'arcade')
@@ -100,7 +100,6 @@ class Arcade:
                     for rr, cc in adjacent_positions:
                         if 0 <= rr < len(self.board.cells) and 0 <= cc < len(self.board.cells[0]) and self.board.cells[r][c] == "R":
                             self.coins += 1
-                    
 
 # To start a new arcade game, you can uncomment the following line:
 # Arcade.start_new_arcade_game()

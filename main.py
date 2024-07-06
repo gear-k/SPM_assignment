@@ -3,6 +3,7 @@ from class_folder.arcade import Arcade
 from class_folder.freeplay import Freeplay
 from class_folder.external import External
 
+
 # ASCII art for the game title
 ART = """
                             *##*                            

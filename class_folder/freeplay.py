@@ -33,16 +33,17 @@ class Freeplay:
             elif difficulty == '2':
                 Freeplay("Hard", 1, 0, 0, board).play_free_play_game()            
         except Exception as e:
-            print(f"An error occurred while starting a new free play game: {e}")
+            print(f"An error occurred while starting a new game: {e}")
 
     def build_option(self):
         # Allows the player to choose and place a building on the board
-        print("Select the building to construct:")
+        print("-------------------------------------")
+        print("Select building to construct:")
         for idx, building in enumerate(BUILDINGS.values(), start=1):
             print(f"{idx}. {building}")
         while True:
             try:
-                building_choice = int(input("Enter building option you want to construct: "))
+                building_choice = int(input("\nEnter building option for construction: "))
                 if 1 <= building_choice <= len(BUILDINGS):
                     building = Building(list(BUILDINGS.values())[building_choice - 1])
                     self.board = building.build_building(self.board, self.mode)

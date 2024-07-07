@@ -54,10 +54,12 @@ class External:
 
     @staticmethod
     def end_game(score):
-        print("Game over!")
-        print(f"Final Score: {score}")
+        print("\n-------------------------------------------")
+        print("GAME OVER!")
+        print(f"Your Score: {score}")
+        print("-------------------------------------------")
 
-        name = input("Enter your name for the high score: ")
+        name = input("Enter your name to view on the leaderboard: ")
         high_scores = External.load_high_scores()
         high_scores.append({'name': name, 'score': score, 'track': len(high_scores)})
         high_scores.sort(key=lambda x: (x['score'], x['track']), reverse=True)

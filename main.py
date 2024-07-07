@@ -38,17 +38,27 @@ ART = """
                            *####*                           
 """
 
+TITLE = """
+              *******************************
+              *                             *
+              *  Welcome to Ngee Ann City   *
+              *       Building Game!        *
+              *                             *
+              *******************************
+"""
+
 def display_main_menu():
     # Main menu loop
     while True:
         try:
             print(ART)
-            print("Welcome to Ngee Ann City Building Game!")
+            print(TITLE)
             print("1. Start New Arcade Game")
             print("2. Start New Free Play Game")
             print("3. Load Saved Game")
             print("4. Display High Scores")
             print("5. Exit Game")
+            print("---------------------------------")
             choice = input("Enter your choice: ")
             if choice == '1':
                 Arcade.start_new_arcade_game()

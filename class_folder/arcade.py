@@ -31,12 +31,13 @@ class Arcade:
             print(f"An error occurred while starting a new arcade game: {e}")
 
     def build_option(self, building1, building2):
+        print("-------------------------------------")
         print("Select the building to construct:")
-        print(f"1. {building1.building}\n2. {building2.building}")
+        print(f"1. {building1.building}\n2. {building2.building}\n")
 
         while True:
             try:
-                building_choice = int(input("Enter building option you want to construct: "))
+                building_choice = int(input("Enter building option for construction: "))
                 if building_choice == 1:
                     self.board = building1.build_building(self.board, self.mode, self)
                 elif building_choice == 2:
@@ -58,7 +59,7 @@ class Arcade:
                 raise ValueError("Board must have cells initialized before starting the game.")
             
             while self.coins > 0 and any(" " in row for row in self.board.cells):
-                print(f"Turn: {self.turn}")
+                print(f"\nTurn: {self.turn}")
                 print(f"Coins: {self.coins}")
                 self.score = Score.calculate_score(self.board)
                 print(f"Score: {self.score}")

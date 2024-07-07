@@ -1,3 +1,4 @@
+import random
 from class_folder.board import Board
 from class_folder.building import Building
 from class_folder.external import External
@@ -46,7 +47,7 @@ class Freeplay:
                 building_choice = int(input("\nEnter building option for construction: "))
                 if 1 <= building_choice <= len(BUILDINGS):
                     building = Building(list(BUILDINGS.values())[building_choice - 1])
-                    self.board = building.build_building(self.board, self.mode)
+                    self.board = building.build_building(self.board, self.mode, self)
                     # Check if any building is placed at the edge of the board and expand if necessary
                     if any(r in [0, len(self.board.cells)-1] or c in [0, len(self.board.cells[0])-1] for r, c in [(r, c) for r in range(len(self.board.cells)) for c in range(len(self.board.cells[0])) if self.board.cells[r][c] != " "]):
                         self.board.expand_board()
@@ -75,7 +76,7 @@ class Freeplay:
                 if choice == '1':
                     self.build_option()
                 elif choice == '2' and not self.board.isEmpty():
-                    self.board = Building.demolish_building(self.board, BUILDINGS)
+                    self.board = Building.demolish_building(self.board, BUILDINGS, self, self.mode)
                 elif choice == '3':
                     External.save_game(self.board, self.turn, self.lossStreak, 'freeplay')
                     self.turn -= 1
@@ -87,7 +88,7 @@ class Freeplay:
 
                 income, upkeep = Freeplay.calculate_upkeep(self.board)
                 if self.difficulty == "Hard":
-                    upkeep * 2
+                    upkeep *= 2  # Corrected to actually double the upkeep in Hard mode
                 profit = income - upkeep
                 
                 print(f"Income: {income}, Upkeep: {upkeep}, Net profit: {profit}")
@@ -141,7 +142,7 @@ class Freeplay:
         to_check = [(row, col)]
         while to_check:
             r, c = to_check.pop()
-            adjacent_positions = [(r-1, c), (r+1, c), (r, c-1), (r, c+1)]
+            adjacent_positions = [(r-1, c), (r+1, c), (r, col-1), (r, col+1)]
             for rr, cc in adjacent_positions:
                 if 0 <= rr < len(board.cells) and 0 <= cc < len(board.cells[0]) and board.cells[rr][cc] == building_type and (rr, cc) not in cluster:
                     cluster.append((rr, cc))

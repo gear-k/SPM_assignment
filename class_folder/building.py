@@ -51,6 +51,8 @@ class Building:
                     else:
                         board.cells[row][col] = self.building[0]
                     print(f"{self.building} placed at {position}")
+                    if mode != "Freeplay":
+                        player.coins -= 1
                     break
                 else:
                     print("Invalid placement. Try again.")
@@ -60,7 +62,7 @@ class Building:
         return board
     
     @staticmethod
-    def demolish_building(board, BUILDINGS, player):
+    def demolish_building(board, BUILDINGS, player, mode):
         total_buildings = sum(1 for row in board.cells for cell in row if cell != " ")
 
         if total_buildings <= 1:
@@ -82,23 +84,14 @@ class Building:
                     building = BUILDINGS.get(board.cells[row][col], "Building")
                     board.cells[row][col] = " "
                     print(f"{building} removed at {position}")
-                    player.coins -= 1
+                    if mode != "Freeplay":
+                        player.coins -= 1
                     break
                 else:
                     print("No building at this place. Try again.")
             except (ValueError, IndexError):
                 print("Invalid input. Please enter a valid row and column.")
-                # No coin deduction for invalid demolition
+                if mode != "Freeplay":
+                    player.coins += 1  # Refund the coin for invalid demolition
 
         return board
-
-# Example usage:
-# board = Board.create_board(5)
-# board.display()
-# player = Player(coins=16)
-# building1 = Building("Road")
-# building1.build_building(board, "Arcade", player)
-# board.display()
-# Building.demolish_building(board, BUILDINGS, player)
-# board.display()
-# print(f"Player's coins: {player.coins}")

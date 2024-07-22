@@ -83,7 +83,7 @@ class Arcade:
                     self.build_option(building1, building2)
                     self.coins -= 1
                 elif choice == '2' and not self.board.isEmpty():
-                    self.board = Building.demolish_building(self.board, BUILDINGS, self)
+                    self.board = Building.demolish_building(self.board, BUILDINGS, self, self.mode)
                     self.coins -= 1
                 elif choice == '3':
                     External.save_game(self.board, self.turn, self.coins, 'arcade')

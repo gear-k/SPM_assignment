@@ -53,7 +53,7 @@ class Arcade:
                     continue
                 break
             except ValueError:
-                print("Invalid input. Please enter 1 or 2.")
+                print("Invalid input. Please enter 1, 2 or 3.")
             except Exception as e:
                 print(f"An error occurred while building: {e}")
         

@@ -46,6 +46,7 @@ class Arcade:
                 elif building_choice == 3: # For when the user wants to reconsider their move
                     print("Build option canceled. Returning to previous menu.")
                     self.turn -= 1  # Only increment turn if a building is constructed
+                    self.coins += 1 # Give back the coins spent
                     return False  # Indicate that the action was canceled
                 else:
                     print("Invalid building choice. Please try again.")

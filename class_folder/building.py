@@ -73,6 +73,7 @@ class Building:
         while True:
             try:
                 position = input("Enter the position of the building to demolish (e.g., A1): ")
+                position = position.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
                 if position[1].isalpha():
                     col = LETTERS.index(position[0].lower()) * 26 + LETTERS.index(position[1].lower())
                     row = int(position[2:]) - 1

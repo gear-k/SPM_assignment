@@ -37,11 +37,16 @@ class Arcade:
 
         while True:
             try:
-                building_choice = int(input("Enter building option for construction: "))
+                building_choice = input("Enter building option for construction: ").strip()
+                building_choice = int(building_choice.replace(" ", ""))  # Remove spaces and convert to int and allows for spacebars
                 if building_choice == 1:
                     self.board = building1.build_building(self.board, self.mode, self)
                 elif building_choice == 2:
                     self.board = building2.build_building(self.board, self.mode, self)
+                elif building_choice == 3: # For when the user wants to reconsider their move
+                    print("Build option canceled. Returning to previous menu.")
+                    self.turn -= 1  # Only increment turn if a building is constructed
+                    return False  # Indicate that the action was canceled
                 else:
                     print("Invalid building choice. Please try again.")
                     continue
@@ -72,6 +77,7 @@ class Arcade:
                 print(f"Building choices: {building1.building}, {building2.building}")
 
                 choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ")
+                choice = choice.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
                 if choice == '1':
                     self.build_option(building1, building2)
                     self.coins -= 1

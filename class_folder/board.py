@@ -2,6 +2,9 @@ import string
 import math
 import shutil
 from pynput import keyboard
+from colorama import Fore, Style, init
+
+init(autoreset=True)
 
 LETTERS = string.ascii_letters
 
@@ -33,7 +36,7 @@ class Board:
             size = len(self.cells) - self.start + terminal_size
         else:
             size = len(self.cells) - self.start
-        #
+
         if size > terminal_size:
             if terminal_size > 52:
                 terminal_size = 2
@@ -42,16 +45,11 @@ class Board:
             temp = 52
         else:
             temp = size
-        # print("temp", temp)
-        # print("board-start", self.start)
-        # print("board-end", self.end)
-        # print("size", size)
+
         if page == 1 and len(self.cells) > self.end:
             start = self.end
             self.start = self.end
             self.end += temp
-            # print("check start", self.start)
-            # print("check end", self.end)
         elif page == -1 and self.start > 0:
             start = self.start - temp
             self.end = self.start
@@ -68,7 +66,14 @@ class Board:
             print(separator)
             row = [f"{i+1:2}  "]
             for j in range(temp):
-                row.append(f"| {self.cells[i][j+start]} ")
+                cell = self.cells[i][j+start]
+                if cell.isdigit():
+                    color = Fore.BLUE  # Blue for digits
+                elif cell.isalpha():
+                    color = Fore.GREEN  # Green for letters
+                else:
+                    color = Style.RESET_ALL
+                row.append(f"| {color}{cell}{Style.RESET_ALL} ")
             row.append("|")
             print("".join(row))
         print(separator)
@@ -110,3 +115,4 @@ class Board:
 
 # board.expand_board()
 # board.display()
+

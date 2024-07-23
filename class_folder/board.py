@@ -13,7 +13,7 @@ class Board:
     def __init__(self, cells):
         self.cells = cells
         self.start = 0
-        self.end = 0
+        self.end = min(len(cells), self.get_terminal_width())  # Initialize `end` correctly
 
     @staticmethod
     def create_board(size):
@@ -29,9 +29,16 @@ class Board:
         self.cells = new_board
         print("City expanded!")
 
+    def get_terminal_width(self):
+        # Get the terminal width adjusted for the board display
+        terminal_columns = shutil.get_terminal_size().columns
+        # Calculate the number of cells that fit in the terminal width
+        return math.floor((terminal_columns - 4) / 4 / 26) * 26
+    
     def display(self, page):
         size = len(self.cells)
-        terminal_size = math.floor((shutil.get_terminal_size().columns-4)/4/26)*26
+        terminal_size = self.get_terminal_width()
+        
         if page == 1 and len(self.cells) > self.end:
             size = len(self.cells) - self.end
         elif page == -1 and self.start > 0:
@@ -41,7 +48,7 @@ class Board:
 
         if size > terminal_size:
             if terminal_size > 52:
-                terminal_size = 2
+                terminal_size = 52
             temp = terminal_size
         elif size > 52:
             temp = 52
@@ -77,7 +84,7 @@ class Board:
             print(separator)
             row = [f"{i+1:2}  "]
             for j in range(temp):
-                cell = self.cells[i][j+start]
+                cell = self.cells[i][j+self.start]
                 if cell.isdigit():
                     color = Fore.BLUE  # Blue for digits
                 elif cell.isalpha():
@@ -85,12 +92,9 @@ class Board:
                 else:
                     color = Style.RESET_ALL
                 row.append(f"| {color}{cell}{Style.RESET_ALL} ")
-                row.append(f"| {self.cells[i][j+self.start]} ")
             row.append("|")
             print("".join(row))
         print(separator)
-
-        return
 
     def check_arrow(self):
         with keyboard.Listener(on_press=self.on_press) as listener:
@@ -119,10 +123,9 @@ class Board:
 board = Board.create_board(20)
 # board.cells[0][0] = "1"
 # board.cells[19][19] = "a"
-# board.display(0)
+board.display(0)
 # board.display(1)
 # board.display(-1)
 
 # board.expand_board()
 # board.display()
-

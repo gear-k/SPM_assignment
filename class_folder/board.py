@@ -1,6 +1,7 @@
 import string
 import math
 import shutil
+import sys
 from pynput import keyboard
 from colorama import Fore, Style, init
 
@@ -29,6 +30,7 @@ class Board:
         print("City expanded!")
 
     def display(self, page):
+        size = len(self.cells)
         terminal_size = math.floor((shutil.get_terminal_size().columns-4)/4/26)*26
         if page == 1 and len(self.cells) > self.end:
             size = len(self.cells) - self.end
@@ -46,23 +48,32 @@ class Board:
         else:
             temp = size
 
+        if page == 1 and self.end < size:
+            if size - self.end < 5:
+                self.start += size - self.end
+            else:
+                self.start += 5
+
         if page == 1 and len(self.cells) > self.end:
             start = self.end
             self.start = self.end
             self.end += temp
         elif page == -1 and self.start > 0:
-            start = self.start - temp
-            self.end = self.start
-            self.start -= temp
-        else:
-            start = self.start
+            if self.start < 5:
+                self.start = 0
+            else:
+                self.start -= 5
+        elif page == 0:
+            self.start = 0
             self.end = self.start + temp
+        else:
+            return
 
         header = ["    "] + [f'  {LETTERS[i]} ' for i in range(temp)]
         separator = "    +" + "---+" * temp
 
         print("".join(header))
-        for i in range(len(self.cells)):
+        for i in range(size):
             print(separator)
             row = [f"{i+1:2}  "]
             for j in range(temp):
@@ -74,14 +85,14 @@ class Board:
                 else:
                     color = Style.RESET_ALL
                 row.append(f"| {color}{cell}{Style.RESET_ALL} ")
+                row.append(f"| {self.cells[i][j+self.start]} ")
             row.append("|")
             print("".join(row))
         print(separator)
 
-        return header, separator, temp, start
+        return
 
     def check_arrow(self):
-        print("Arrow Left to move Left - Arrow Right to move Right - Esc to continue")
         with keyboard.Listener(on_press=self.on_press) as listener:
             listener.join()
         
@@ -90,9 +101,8 @@ class Board:
             self.display(-1)
         elif key == keyboard.Key.right:  # Listen for right key
             self.display(1)
-        elif key == keyboard.Key.esc:
+        else:
             return False
-        print("Arrow Left to move Left - Arrow Right to move Right - Any other key to continue")
         
     def isEmpty(self):
         return all(all(cell == " " for cell in row) for row in self.cells)
@@ -106,7 +116,7 @@ class Board:
         return False
 
 # Example usage:
-# board = Board.create_board(20)
+board = Board.create_board(20)
 # board.cells[0][0] = "1"
 # board.cells[19][19] = "a"
 # board.display(0)

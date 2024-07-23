@@ -2,7 +2,7 @@ from class_folder.board import Board
 from class_folder.arcade import Arcade
 from class_folder.freeplay import Freeplay
 from class_folder.external import External
-
+from class_folder.instructions import display_instructions
 
 # ASCII art for the game title
 ART = """
@@ -57,14 +57,22 @@ def display_main_menu():
             print("2. Start New Free Play Game")
             print("3. Load Saved Game")
             print("4. Display High Scores")
-            print("5. Exit Game")
+            print("5. How to play")
+            print("6. Exit Game")
             print("---------------------------------")
             choice = input("Enter your choice: ")
+            choice = choice.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
             if choice == '1':
                 Arcade.start_new_arcade_game()
             elif choice == '2':
                 Freeplay.start_new_free_play_game()
             elif choice == '3':
+                # The following 4 lines allow the player to cancel in the event they do not want to enter option 3
+                confirm_load = input("You selected Load Saved Game. Type 'cancel' to abort or press Enter to continue: ").lower()
+                confirm_load = confirm_load.replace(" ", "") # This allows the input to accept spacebars by auto removing them
+                if confirm_load == 'cancel':
+                    print("Load Saved Game aborted.")
+                    continue
                 game = External.load_saved_game()
                 if game:
                     if game['mode'] == 'arcade':
@@ -75,6 +83,8 @@ def display_main_menu():
                 high_scores = External.load_high_scores()
                 External.display_high_scores(high_scores)
             elif choice == '5':
+                display_instructions()
+            elif choice == '6':
                 exit_game()
                 break
             else:

@@ -37,17 +37,23 @@ class Arcade:
 
         while True:
             try:
-                building_choice = int(input("Enter building option for construction: "))
+                building_choice = input("Enter building option for construction: ").strip()
+                building_choice = int(building_choice.replace(" ", ""))  # Remove spaces and convert to int and allows for spacebars
                 if building_choice == 1:
                     self.board = building1.build_building(self.board, self.mode, self)
                 elif building_choice == 2:
                     self.board = building2.build_building(self.board, self.mode, self)
+                elif building_choice == 3: # For when the user wants to reconsider their move
+                    print("Build option canceled. Returning to previous menu.")
+                    self.turn -= 1  # Only increment turn if a building is constructed
+                    self.coins += 1 # Give back the coins spent
+                    return False  # Indicate that the action was canceled
                 else:
                     print("Invalid building choice. Please try again.")
                     continue
                 break
             except ValueError:
-                print("Invalid input. Please enter 1 or 2.")
+                print("Invalid input. Please enter 1, 2 or 3.")
             except Exception as e:
                 print(f"An error occurred while building: {e}")
         
@@ -72,11 +78,12 @@ class Arcade:
                 print(f"Building choices: {building1.building}, {building2.building}")
 
                 choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ")
+                choice = choice.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
                 if choice == '1':
                     self.build_option(building1, building2)
                     self.coins -= 1
                 elif choice == '2' and not self.board.isEmpty():
-                    self.board = Building.demolish_building(self.board, BUILDINGS, self)
+                    self.board = Building.demolish_building(self.board, BUILDINGS, self, self.mode)
                     self.coins -= 1
                 elif choice == '3':
                     External.save_game(self.board, self.turn, self.coins, 'arcade')

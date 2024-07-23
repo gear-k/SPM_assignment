@@ -4,6 +4,21 @@ from class_folder.building import Building
 from class_folder.external import External
 from class_folder.score import Score
 
+# Difficulty Settings
+Difficulty = """
+
+            *****************************
+            *                           *
+            *    Choose Difficulty:     *
+            *                           *
+            *    1. Easy (1)            *
+            *                           *
+            *    2. Hard (2)            *
+            *                           *
+            *****************************    
+
+"""
+
 # Define the possible building types and their symbols
 BUILDINGS = {
     "*": "Road",
@@ -28,7 +43,8 @@ class Freeplay:
         try:
             print("Starting new Free Play game...\n")
             board = Board.create_board(5)
-            difficulty = input("Choose difficulty: Easy (1), Hard (2) ")
+            print(Difficulty) # Display the difficulty menu
+            difficulty = input("Choose difficulty: ")
             if difficulty == '1':
                 Freeplay("Easy", 1, 0, 0, board).play_free_play_game()
             elif difficulty == '2':
@@ -42,15 +58,21 @@ class Freeplay:
         print("Select building to construct:")
         for idx, building in enumerate(BUILDINGS.values(), start=1):
             print(f"{idx}. {building}")
+        print("6. Cancel")
         while True:
             try:
-                building_choice = int(input("\nEnter building option for construction: "))
+                building_choice = input("\nEnter building option for construction: ").strip()
+                building_choice = int(building_choice.replace(" ", ""))  # Remove spaces and convert to int and allows for spacebars
                 if 1 <= building_choice <= len(BUILDINGS):
                     building = Building(list(BUILDINGS.values())[building_choice - 1])
                     self.board = building.build_building(self.board, self.mode, self)
                     # Check if any building is placed at the edge of the board and expand if necessary
                     if any(r in [0, len(self.board.cells)-1] or c in [0, len(self.board.cells[0])-1] for r, c in [(r, c) for r in range(len(self.board.cells)) for c in range(len(self.board.cells[0])) if self.board.cells[r][c] != " "]):
                         self.board.expand_board()
+                    break
+                elif building_choice == 6: # Give the player the option to cancel the option
+                    print("Build option canceled. Returning to previous menu.")
+                    self.turn -= 1
                     break
                 else:
                     print("Invalid building choice. Please try again.")
@@ -73,6 +95,7 @@ class Freeplay:
                 self.board.check_arrow()
 
                 choice = input("Enter your choice: 1 to build, 2 to demolish, 3 to save, 4 to end: ")
+                choice = choice.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
                 if choice == '1':
                     self.build_option()
                 elif choice == '2' and not self.board.isEmpty():

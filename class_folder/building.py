@@ -1,4 +1,5 @@
 import string
+import re # Import regex module for validation
 
 LETTERS = string.ascii_lowercase
 BUILDINGS = {
@@ -36,12 +37,14 @@ class Building:
             try:
                 position = input("Enter the position to place the building (e.g., A1): ")
                 position = position.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
-                if position[1].isalpha():
-                    col = LETTERS.index(position[0].lower()) * 26 + LETTERS.index(position[1].lower())
-                    row = int(position[2:]) - 1
-                else:
-                    col = LETTERS.index(position[0].lower())
-                    row = int(position[1:]) - 1
+                if not re.match(r'^[A-Z][0-9]+$', position):
+                    print("Invalid input. Please enter a valid coordinate like A1.")
+                    continue
+
+                # Parse the position into row and col
+                row = ord(position[0]) - ord('A')
+                col = int(position[1:]) - 1
+                
                 if row < 0 or col < 0 or row >= len(board.cells) or col >= len(board.cells[0]):
                     raise IndexError()
                 if board.isEmpty() or board.isValid(row, col) or mode == "Freeplay":
@@ -74,12 +77,14 @@ class Building:
             try:
                 position = input("Enter the position of the building to demolish (e.g., A1): ")
                 position = position.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
-                if position[1].isalpha():
-                    col = LETTERS.index(position[0].lower()) * 26 + LETTERS.index(position[1].lower())
-                    row = int(position[2:]) - 1
-                else:
-                    col = LETTERS.index(position[0].lower())
-                    row = int(position[1:]) - 1
+                if not re.match(r'^[A-Z][0-9]+$', position):
+                    print("Invalid input. Please enter a valid coordinate like A1.")
+                    continue
+
+                # Parse the position into row and col
+                row = ord(position[0]) - ord('A')
+                col = int(position[1:]) - 1
+                
                 if row < 0 or col < 0 or row >= len(board.cells) or col >= len(board.cells[0]):
                     raise IndexError()
                 if board.cells[row][col] != " ":

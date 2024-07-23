@@ -2,7 +2,7 @@ from class_folder.board import Board
 from class_folder.arcade import Arcade
 from class_folder.freeplay import Freeplay
 from class_folder.external import External
-
+from class_folder.instructions import display_instructions
 
 # ASCII art for the game title
 ART = """
@@ -57,7 +57,8 @@ def display_main_menu():
             print("2. Start New Free Play Game")
             print("3. Load Saved Game")
             print("4. Display High Scores")
-            print("5. Exit Game")
+            print("5. How to play")
+            print("6. Exit Game")
             print("---------------------------------")
             choice = input("Enter your choice: ")
             choice = choice.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
@@ -82,6 +83,8 @@ def display_main_menu():
                 high_scores = External.load_high_scores()
                 External.display_high_scores(high_scores)
             elif choice == '5':
+                display_instructions()
+            elif choice == '6':
                 exit_game()
                 break
             else:

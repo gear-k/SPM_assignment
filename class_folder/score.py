@@ -23,25 +23,23 @@ class Score:
     def calculate_residential_score(board, row, col):
         # Calculate the score for a residential building
         score = 0
-        adjacent_positions = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
+        connected_buildings = board.find_connected_buildings(row, col)
         adjacent_industry = False
 
         try:
-            for r, c in adjacent_positions:
-                if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]):
-                    if board.cells[r][c] == 'I':
-                        adjacent_industry = True
-                        break
+            for r, c in connected_buildings:
+                if board.cells[r][c] == 'I':
+                    adjacent_industry = True
+                    break
 
             if adjacent_industry:
                 score = 1
             else:
-                for r, c in adjacent_positions:
-                    if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]):
-                        if board.cells[r][c] == 'R' or board.cells[r][c] == 'C':
-                            score += 1
-                        elif board.cells[r][c] == 'O':
-                            score += 2
+                for r, c in connected_buildings:
+                    if board.cells[r][c] == 'R' or board.cells[r][c] == 'C':
+                        score += 1
+                    elif board.cells[r][c] == 'O':
+                        score += 2
         except Exception as e:
             print(f"Error calculating residential score for cell ({row}, {col}): {e}")
         
@@ -60,11 +58,11 @@ class Score:
     def calculate_commercial_score(board, row, col):
         # Calculate the score for a commercial building
         score = 0
-        adjacent_positions = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
+        connected_buildings = board.find_connected_buildings(row, col)
 
         try:
-            for r, c in adjacent_positions:
-                if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]) and board.cells[r][c] == 'C':
+            for r, c in connected_buildings:
+                if board.cells[r][c] == 'C':
                     score += 1
         except Exception as e:
             print(f"Error calculating commercial score for cell ({row}, {col}): {e}")
@@ -75,11 +73,11 @@ class Score:
     def calculate_park_score(board, row, col):
         # Calculate the score for a park
         score = 0
-        adjacent_positions = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
+        connected_buildings = board.find_connected_buildings(row, col)
 
         try:
-            for r, c in adjacent_positions:
-                if 0 <= r < len(board.cells) and 0 <= c < len(board.cells[0]) and board.cells[r][c] == 'O':
+            for r, c in connected_buildings:
+                if board.cells[r][c] == 'O':
                     score += 1
         except Exception as e:
             print(f"Error calculating park score for cell ({row}, {col}): {e}")

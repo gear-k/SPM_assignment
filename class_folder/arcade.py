@@ -38,15 +38,15 @@ class Arcade:
         while True:
             try:
                 building_choice = input("Enter building option for construction: ").strip()
-                building_choice = int(building_choice.replace(" ", ""))  # Remove spaces and convert to int and allows for spacebars
+                building_choice = int(building_choice.replace(" ", ""))  # Remove spaces and convert to int
                 if building_choice == 1:
                     self.board = building1.build_building(self.board, self.mode, self)
                 elif building_choice == 2:
                     self.board = building2.build_building(self.board, self.mode, self)
-                elif building_choice == 3: # For when the user wants to reconsider their move
+                elif building_choice == 3:  # For when the user wants to reconsider their move
                     print("Build option canceled. Returning to previous menu.")
                     self.turn -= 1  # Only increment turn if a building is constructed
-                    self.coins += 1 # Give back the coins spent
+                    self.coins += 1  # Give back the coins spent
                     return False  # Indicate that the action was canceled
                 else:
                     print("Invalid building choice. Please try again.")
@@ -78,7 +78,7 @@ class Arcade:
                 print(f"Building choices: {building1.building}, {building2.building}")
 
                 choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ")
-                choice = choice.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
+                choice = choice.replace(" ", "")  # This feature allows the input to accept spacebars by auto removing them
                 if choice == '1':
                     self.build_option(building1, building2)
                     self.coins -= 1
@@ -104,9 +104,9 @@ class Arcade:
         for r in range(len(self.board.cells)):
             for c in range(len(self.board.cells[0])):
                 if self.board.cells[r][c] == 'I' or self.board.cells[r][c] == 'C':
-                    adjacent_positions = [(r-1, c), (r+1, c), (r, c-1), (r, c+1)]
+                    adjacent_positions = [(r-1, c), (r+1, c), (r, col-1), (r, col+1)]
                     for rr, cc in adjacent_positions:
-                        if 0 <= rr < len(self.board.cells) and 0 <= cc < len(self.board.cells[0]) and self.board.cells[r][c] == "R":
+                        if 0 <= rr < len(self.board.cells) and 0 <= cc < len(self.board.cells[0]) and self.board.cells[rr][cc] == "R":
                             self.coins += 1
 
 # To start a new arcade game, you can uncomment the following line:

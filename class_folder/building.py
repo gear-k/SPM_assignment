@@ -1,5 +1,5 @@
 import string
-import re # Import regex module for validation
+import re  # Import regex module for validation
 
 LETTERS = string.ascii_lowercase
 BUILDINGS = {
@@ -36,15 +36,15 @@ class Building:
         while True:
             try:
                 position = input("Enter the position to place the building (e.g., A1): ")
-                position = position.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
+                position = position.replace(" ", "")  # This feature allows the input to accept spacebars by auto removing them
                 if not re.match(r'^[A-Z][0-9]+$', position):
                     print("Invalid input. Please enter a valid coordinate like A1.")
                     continue
 
                 # Parse the position into row and col
-                row = ord(position[0]) - ord('A')
+                row = ord(position[0].upper()) - ord('A')
                 col = int(position[1:]) - 1
-                
+
                 if row < 0 or col < 0 or row >= len(board.cells) or col >= len(board.cells[0]):
                     raise IndexError()
                 if board.isEmpty() or board.isValid(row, col) or mode == "Freeplay":
@@ -76,15 +76,15 @@ class Building:
         while True:
             try:
                 position = input("Enter the position of the building to demolish (e.g., A1): ")
-                position = position.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
+                position = position.replace(" ", "")  # This feature allows the input to accept spacebars by auto removing them
                 if not re.match(r'^[A-Z][0-9]+$', position):
                     print("Invalid input. Please enter a valid coordinate like A1.")
                     continue
 
                 # Parse the position into row and col
-                row = ord(position[0]) - ord('A')
+                row = ord(position[0].upper()) - ord('A')
                 col = int(position[1:]) - 1
-                
+
                 if row < 0 or col < 0 or row >= len(board.cells) or col >= len(board.cells[0]):
                     raise IndexError()
                 if board.cells[row][col] != " ":

@@ -1,9 +1,8 @@
 import string
 import math
 import shutil
-import sys
-from pynput import keyboard
 from colorama import Fore, Style, init
+from pynput import keyboard
 
 init(autoreset=True)
 
@@ -35,7 +34,7 @@ class Board:
         # Calculate the number of cells that fit in the terminal width
         return math.floor((terminal_columns - 4) / 4 / 26) * 26
     
-    def display(self, page):
+    def display(self, page=0):
         size = len(self.cells)
         terminal_size = self.get_terminal_width()
         
@@ -119,13 +118,28 @@ class Board:
                     return True
         return False
 
+    def place_building(self, row, col, building_type):
+        if 0 <= row < len(self.cells) and 0 <= col < len(self.cells[0]) and self.cells[row][col] == " ":
+            self.cells[row][col] = building_type
+            return True
+        return False
+
+    def find_connected_buildings(self, start_row, start_col):
+        connected = set()
+        to_check = [(start_row, start_col)]
+        while to_check:
+            r, c = to_check.pop(0)
+            if (r, c) not in connected:
+                connected.add((r, c))
+                for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                    new_r, new_c = r + dr, c + dc
+                    if 0 <= new_r < len(self.cells) and 0 <= new_c < len(self.cells[0]):
+                        if self.cells[new_r][new_c] == '*':
+                            to_check.append((new_r, new_c))
+                        elif self.cells[new_r][new_c] != ' ':
+                            connected.add((new_r, new_c))
+        return connected
+
 # Example usage:
 board = Board.create_board(20)
-# board.cells[0][0] = "1"
-# board.cells[19][19] = "a"
-board.display(0)
-# board.display(1)
-# board.display(-1)
-
-# board.expand_board()
-# board.display()
+board.display()

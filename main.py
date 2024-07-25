@@ -60,19 +60,13 @@ def display_main_menu():
             print("5. How to play")
             print("6. Exit Game")
             print("---------------------------------")
-            choice = input("Enter your choice: ")
+            choice = input("Enter your choice: ").strip()
             choice = choice.replace(" ", "") # This feature allows the input to accept spacebars by auto removing them
             if choice == '1':
                 Arcade.start_new_arcade_game()
             elif choice == '2':
                 Freeplay.start_new_free_play_game()
             elif choice == '3':
-                # The following 4 lines allow the player to cancel in the event they do not want to enter option 3
-                confirm_load = input("You selected Load Saved Game. Type 'cancel' to abort or press Enter to continue: ").lower()
-                confirm_load = confirm_load.replace(" ", "") # This allows the input to accept spacebars by auto removing them
-                if confirm_load == 'cancel':
-                    print("Load Saved Game aborted.")
-                    continue
                 game = External.load_saved_game()
                 if game:
                     if game['mode'] == 'arcade':

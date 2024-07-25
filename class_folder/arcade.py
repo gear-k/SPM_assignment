@@ -34,6 +34,7 @@ class Arcade:
         print("-------------------------------------")
         print("Select the building to construct:")
         print(f"1. {building1.building}\n2. {building2.building}\n")
+        print("3. Cancel")
 
         while True:
             try:
@@ -77,7 +78,7 @@ class Arcade:
                 building1, building2 = Building(r1), Building(r2)
                 print(f"Building choices: {building1.building}, {building2.building}")
 
-                choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ")
+                choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ").strip()
                 choice = choice.replace(" ", "")  # This feature allows the input to accept spacebars by auto removing them
                 if choice == '1':
                     self.build_option(building1, building2)
@@ -104,7 +105,7 @@ class Arcade:
         for r in range(len(self.board.cells)):
             for c in range(len(self.board.cells[0])):
                 if self.board.cells[r][c] == 'I' or self.board.cells[r][c] == 'C':
-                    adjacent_positions = [(r-1, c), (r+1, c), (r, col-1), (r, col+1)]
+                    adjacent_positions = [(r-1, c), (r+1, c), (r, c-1), (r, c+1)]
                     for rr, cc in adjacent_positions:
                         if 0 <= rr < len(self.board.cells) and 0 <= cc < len(self.board.cells[0]) and self.board.cells[rr][cc] == "R":
                             self.coins += 1

@@ -16,8 +16,10 @@ class External:
     def save_game(board, turn, spec, mode):
         os.makedirs('storage', exist_ok=True)
         while True:
-            filename = input("Enter the filename to save the game: ")
-            if not os.path.isfile("storage/" + filename):
+            filename = input("Enter the filename to save the game: ").strip()
+            if filename == 'Cancel' or filename == 'cancel':
+                print("'Cancel' is not a available file name.")
+            elif not os.path.isfile("storage/" + filename):
                 break
             print("File name already in use. Please try again.")
 
@@ -33,7 +35,10 @@ class External:
 
     @staticmethod
     def load_saved_game():
-        filename = input("Enter the filename of the saved game: ")
+        filename = input("Enter the filename of the saved game or type 'Cancel' to abort: ").strip()
+        if filename == 'Cancel' or filename == 'cancel':
+            print("Load Saved Game aborted.")
+            return None
         try:
             with open("storage/" + filename, 'r') as file:
                 game_state = json.load(file)
@@ -69,7 +74,7 @@ class External:
         print(f"Your Score: {score}")
         print("-------------------------------------------")
 
-        name = input("Enter your name to view on the leaderboard: ")
+        name = input("Enter your name to view on the leaderboard: ").strip()
         high_scores = External.load_high_scores()
         high_scores.append({'name': name, 'score': score, 'track': len(high_scores)})
         high_scores.sort(key=lambda x: (x['score'], x['track']), reverse=True)

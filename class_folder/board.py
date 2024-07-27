@@ -18,7 +18,7 @@ class Board:
     def create_board(size):
         cells = [[" " for _ in range(size)] for _ in range(size)]
         return Board(cells)
-    
+
     def expand_board(self):
         size = len(self.cells) + 10
         new_board = [[" " for _ in range(size)] for _ in range(size)]
@@ -34,7 +34,7 @@ class Board:
 
         if size > terminal_size:
             if terminal_size > 52:
-                terminal_size = 2
+                terminal_size = 52
             temp = terminal_size
         elif size > 52:
             temp = 52
@@ -68,15 +68,15 @@ class Board:
                 cell = self.cells[i][j+self.start]
                 color = Style.RESET_ALL
                 if cell == "R":
-                    color = Fore.BLUE  # Blue for digits
+                    color = Fore.BLUE
                 elif cell == "I":
-                    color = Fore.GREEN  # Green for letters
+                    color = Fore.GREEN
                 elif cell == "C":
-                    color = Fore.CYAN  # Green for letters
+                    color = Fore.CYAN
                 elif cell == "O":
-                    color = Fore.LIGHTMAGENTA_EX  # Green for letters
+                    color = Fore.LIGHTMAGENTA_EX
                 elif cell == "*":
-                    color = Fore.RED  # Green for letters
+                    color = Fore.RED
                 row.append(f"| {color}{cell}{Style.RESET_ALL} ")
             row.append("|")
             print("".join(row))
@@ -87,15 +87,15 @@ class Board:
     def check_arrow(self):
         with keyboard.Listener(on_press=self.on_press) as listener:
             listener.join()
-        
+
     def on_press(self, key):
-        if key == keyboard.Key.left:  # Listen for left key
+        if key == keyboard.Key.left:
             self.display(-1)
-        elif key == keyboard.Key.right:  # Listen for right key
+        elif key == keyboard.Key.right:
             self.display(1)
         else:
             return False
-        
+
     def isEmpty(self):
         return all(all(cell == " " for cell in row) for row in self.cells)
 
@@ -105,6 +105,12 @@ class Board:
             for r, c in adjacent_positions:
                 if 0 <= r < len(self.cells) and 0 <= c < len(self.cells[0]) and self.cells[r][c] != " ":
                     return True
+        return False
+
+    def place_building(self, row, col, building_type):
+        if 0 <= row < len(self.cells) and 0 <= col < len(self.cells[0]) and self.cells[row][col] == " ":
+            self.cells[row][col] = building_type
+            return True
         return False
 
     def find_connected_buildings(self, start_row, start_col):

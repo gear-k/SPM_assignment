@@ -6,7 +6,6 @@ from class_folder.score import Score
 
 # Difficulty Settings
 Difficulty = """
-
             *****************************
             *                           *
             *    Choose Difficulty:     *
@@ -15,8 +14,7 @@ Difficulty = """
             *                           *
             *    2. Hard (2)            *
             *                           *
-            *****************************    
-
+            *****************************
 """
 
 # Define the possible building types and their symbols
@@ -36,7 +34,7 @@ class Freeplay:
         self.score = score
         self.lossStreak = lossStreak
         self.board = board
-    
+
     @staticmethod
     def start_new_free_play_game():
         # Starts a new Free Play game by initializing the board and game state
@@ -65,14 +63,11 @@ class Freeplay:
                 building_choice = int(building_choice.replace(" ", ""))  # Remove spaces and convert to int
                 if 1 <= building_choice <= len(BUILDINGS):
                     building = Building(list(BUILDINGS.values())[building_choice - 1])
-
-
                     self.board = building.build_building(self.board, self.mode, self)
                     # Check if any building is placed at the edge of the board and expand if necessary
                     if any(r in [0, len(self.board.cells)-1] or c in [0, len(self.board.cells[0])-1] for r, c in [(r, c) for r in range(len(self.board.cells)) for c in range(len(self.board.cells[0])) if self.board.cells[r][c] != " "]):
                         self.board.expand_board()
                     break
-
                 elif building_choice == 6:  # Give the player the option to cancel the option
                     print("Build option canceled. Returning to previous menu.")
                     self.turn -= 1
@@ -93,7 +88,7 @@ class Freeplay:
                 self.score = Score.calculate_score(self.board)
                 print(f"Score: {self.score}")
                 self.turn += 1
-                
+
                 self.board.display(0)
                 self.board.check_arrow()
 
@@ -116,52 +111,50 @@ class Freeplay:
                 if self.difficulty == "Hard":
                     upkeep *= 2  # Corrected to actually double the upkeep in Hard mode
                 profit = income - upkeep
-                
+
                 print(f"Income: {income}, Upkeep: {upkeep}, Net profit: {profit}")
 
                 if profit < 0:
                     self.lossStreak += 1
                 else:
                     self.lossStreak = 0
-            
+
             External.end_game(self.score)
         except Exception as e:
             print(f"An error occurred during the game: {e}")
 
     @staticmethod
     def calculate_upkeep(board):
-        # Calculates the income and upkeep of the current board state
         income = 0
         upkeep = 0
-        residential_clusters = []
-        road_clusters = []
+        visited = set()
+
         for r in range(len(board.cells)):
             for c in range(len(board.cells[0])):
-                if board.cells[r][c] == 'R':
-                    income += 1
-                    # Find cluster of residential buildings
-                    if not any((r, c) in cluster for cluster in residential_clusters):
-                        cluster = Freeplay.find_cluster(board, r, c, 'R')
-                        if len(cluster) > 1:
-                            residential_clusters.append(cluster)
+                if (r, c) not in visited:
+                    if board.cells[r][c] == 'R':
+                        income += 1
                         upkeep += 1
-                elif board.cells[r][c] == 'I':
-                    income += 2
-                    upkeep += 1
-                elif board.cells[r][c] == 'C':
-                    income += 3
-                    upkeep += 2
-                elif board.cells[r][c] == 'O':
-                    upkeep += 1
-                elif board.cells[r][c] == '*':
-                     # Find cluster of roads
-                    if not any((r, c) in cluster for cluster in road_clusters):
-                        cluster = Freeplay.find_cluster(board, r, c, '*')
-                        if len(cluster) > 1:
-                            road_clusters.append(cluster)
+                    elif board.cells[r][c] == 'I':
+                        income += 2
                         upkeep += 1
+                        connected_buildings = board.find_connected_buildings(r, c)
+                        income += sum(1 for rr, cc in connected_buildings if board.cells[rr][cc] == 'R')
+                    elif board.cells[r][c] == 'C':
+                        income += 3
+                        upkeep += 2
+                        connected_buildings = board.find_connected_buildings(r, c)
+                        income += sum(1 for rr, cc in connected_buildings if board.cells[rr][cc] == 'R')
+                    elif board.cells[r][c] == 'O':
+                        upkeep += 1
+                    elif board.cells[r][c] == '*':
+                        upkeep += 1
+
+                    visited.add((r, c))
+                    visited.update(board.find_connected_buildings(r, c))
+
         return income, upkeep
-    
+
     @staticmethod
     def find_cluster(board, row, col, building_type):
         cluster = [(row, col)]

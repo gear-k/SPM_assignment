@@ -1,7 +1,6 @@
 class Score:
     @staticmethod
     def calculate_score(board):
-        # Calculate the total score for the board
         score = 0
         score += Score.calculate_industry_score(board)
         for r in range(len(board.cells)):
@@ -21,33 +20,28 @@ class Score:
 
     @staticmethod
     def calculate_residential_score(board, row, col):
-        # Calculate the score for a residential building
         score = 0
-        connected_buildings = board.find_connected_buildings(row, col)
         adjacent_industry = False
+        connected_buildings = board.find_connected_buildings(row, col)
 
-        try:
+        for r, c in connected_buildings:
+            if board.cells[r][c] == 'I':
+                adjacent_industry = True
+                break
+
+        if adjacent_industry:
+            score = 1
+        else:
             for r, c in connected_buildings:
-                if board.cells[r][c] == 'I':
-                    adjacent_industry = True
-                    break
+                if board.cells[r][c] == 'R' or board.cells[r][c] == 'C':
+                    score += 1
+                elif board.cells[r][c] == 'O':
+                    score += 2
 
-            if adjacent_industry:
-                score = 1
-            else:
-                for r, c in connected_buildings:
-                    if board.cells[r][c] == 'R' or board.cells[r][c] == 'C':
-                        score += 1
-                    elif board.cells[r][c] == 'O':
-                        score += 2
-        except Exception as e:
-            print(f"Error calculating residential score for cell ({row}, {col}): {e}")
-        
         return score
 
     @staticmethod
     def calculate_industry_score(board):
-        # Calculate the score for all industry buildings
         try:
             return sum(1 for r in range(len(board.cells)) for c in range(len(board.cells[0])) if board.cells[r][c] == 'I')
         except Exception as e:
@@ -56,49 +50,40 @@ class Score:
 
     @staticmethod
     def calculate_commercial_score(board, row, col):
-        # Calculate the score for a commercial building
         score = 0
         connected_buildings = board.find_connected_buildings(row, col)
 
-        try:
-            for r, c in connected_buildings:
-                if board.cells[r][c] == 'C':
-                    score += 1
-        except Exception as e:
-            print(f"Error calculating commercial score for cell ({row}, {col}): {e}")
-        
+        for r, c in connected_buildings:
+            if board.cells[r][c] == 'C':
+                score += 1
+            elif board.cells[r][c] == 'R':
+                score += 1
+
         return score
 
     @staticmethod
     def calculate_park_score(board, row, col):
-        # Calculate the score for a park
         score = 0
-        connected_buildings = board.find_connected_buildings(row, col)
-
-        try:
-            for r, c in connected_buildings:
-                if board.cells[r][c] == 'O':
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            new_r, new_c = row + dr, col + dc
+            if 0 <= new_r < len(board.cells) and 0 <= new_c < len(board.cells[0]):
+                if board.cells[new_r][new_c] == 'O':
                     score += 1
-        except Exception as e:
-            print(f"Error calculating park score for cell ({row}, {col}): {e}")
-        
         return score
 
     @staticmethod
     def calculate_road_score(board, row, col):
-        # Calculate the score for a road
         score = 0
+        road_cluster = set()
 
-        try:
-            for c in range(len(board.cells[0])):
-                if board.cells[row][c] == '*':
-                    score += 1
-        except Exception as e:
-            print(f"Error calculating road score for cell ({row}, {col}): {e}")
-        
+        for c in range(len(board.cells[0])):
+            if board.cells[row][c] == '*' and (row, c) not in road_cluster:
+                connected_roads = board.find_connected_buildings(row, c)
+                road_cluster.update(connected_roads)
+
+        score += len(road_cluster)
         return score
 
     @staticmethod
     def update_score_for_turn(board):
-        # This function should be called at the end of each turn to update the score
         return Score.calculate_score(board)

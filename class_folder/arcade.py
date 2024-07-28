@@ -68,14 +68,15 @@ class Arcade:
             while self.coins > 0 and any(" " in row for row in self.board.cells):
                 print(f"\nTurn: {self.turn}")
                 print(f"Coins: {self.coins}")
-                self.score = Score.calculate_score(self.board)
+                self.score = Score.calculate_score(self.board, self.mode)
                 print(f"Score: {self.score}")
                 self.turn += 1
 
                 self.board.display(0)
 
-                r1, r2 = random.sample(list(BUILDINGS.values()), 2)
-                building1, building2 = Building(r1), Building(r2)
+                # Corrected building selection
+                r1, r2 = random.sample(list(BUILDINGS.keys()), 2)
+                building1, building2 = Building(BUILDINGS[r1]), Building(BUILDINGS[r2])
                 print(f"Building choices: {building1.building}, {building2.building}")
 
                 choice = input("Enter 1 to build, 2 to demolish, 3 to save, 4 to end: ").strip()

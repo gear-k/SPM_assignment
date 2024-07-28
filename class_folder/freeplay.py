@@ -85,7 +85,7 @@ class Freeplay:
             while self.lossStreak < 20:
                 print(f"Turn: {self.turn}")
                 print(f"Loss Streak: {self.lossStreak}")
-                self.score = Score.calculate_score(self.board)
+                self.score = Score.calculate_score(self.board, self.mode)
                 print(f"Score: {self.score}")
                 self.turn += 1
 

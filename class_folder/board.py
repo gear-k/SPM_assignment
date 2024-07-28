@@ -82,8 +82,6 @@ class Board:
             print("".join(row))
         print(separator)
 
-        return
-
     def check_arrow(self):
         with keyboard.Listener(on_press=self.on_press) as listener:
             listener.join()
@@ -123,11 +121,29 @@ class Board:
                 for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
                     new_r, new_c = r + dr, c + dc
                     if 0 <= new_r < len(self.cells) and 0 <= new_c < len(self.cells[0]):
-                        if self.cells[new_r][new_c] == '*':
+                        if self.cells[new_r][new_c] == '*' or (new_r, new_c) == (start_row, start_col):
                             to_check.append((new_r, new_c))
                         elif self.cells[new_r][new_c] != ' ':
                             connected.add((new_r, new_c))
         return connected
+
+def are_buildings_connected(board, pos1, pos2):
+    visited = set()
+    to_visit = [pos1]
+    while to_visit:
+        current = to_visit.pop(0)
+        if current == pos2:
+            return True
+        if current in visited:
+            continue
+        visited.add(current)
+        r, c = current
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < len(board.cells) and 0 <= nc < len(board.cells[0]):
+                if board.cells[nr][nc] == '*' or (nr, nc) == pos2:
+                    to_visit.append((nr, nc))
+    return False
 
 # Example usage:
 # board = Board.create_board(20)
